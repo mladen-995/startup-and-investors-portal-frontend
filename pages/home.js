@@ -1,10 +1,22 @@
+import { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import Link from "next/link";
 
 export default function Home() {
+  localStorage.getItem("user");
+  useEffect(() => {
+    if (!localStorage.getItem("user")) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+  });
+
   return (
     <Navbar bg="light" expand="lg">
       <Container>
@@ -30,8 +42,7 @@ export default function Home() {
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
-        <Link href="/login">Login</Link>|<Link href="/register">Register</Link>
-        {/* <Navbar.Collapse className="navbar-nav justify-content-end">
+        <Navbar.Collapse className="navbar-nav justify-content-end">
           <NavDropdown title="Mladen Simijonovic" id="basic-nav-dropdown">
             <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
             <NavDropdown.Item href="#action/3.2">
@@ -43,7 +54,7 @@ export default function Home() {
               Separated link
             </NavDropdown.Item>
           </NavDropdown>
-        </Navbar.Collapse> */}
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   );
