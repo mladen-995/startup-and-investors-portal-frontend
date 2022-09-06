@@ -28,7 +28,7 @@ export default function Register() {
 
   return (
     <Container className="d-flex justify-content-center">
-      <Card className="mt-5" style={{ minWidth: "500px", width: "50%" }}>
+      <Card className="mt-5" style={{ minWidth: "900px", width: "50%" }}>
         <Card.Body>
           <h1>Register</h1>
           <Form.Group className="mb-3">
@@ -39,6 +39,7 @@ export default function Register() {
               <option value="startup">Startup</option>
             </Form.Select>
           </Form.Group>
+          <hr />
           {form}
         </Card.Body>
       </Card>

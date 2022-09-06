@@ -28,10 +28,11 @@ export default function Login() {
     const { username, password } = values;
 
     axios
-      .post("/api/login", { username, password })
+      .post("http://localhost:3000/api/login", { username, password })
       .then((response) => {
         const data = response.data.data;
         Cookies.set("token", data.token);
+        Cookies.set("user", JSON.stringify(data.user));
 
         Router.push("/my-profile");
       })
@@ -59,8 +60,8 @@ export default function Login() {
           >
             <Form>
               <div className="mb-3">
-                <label className="form-label">Email address</label>
-                <Field type="email" name="username" className="form-control" />
+                <label className="form-label">Username</label>
+                <Field type="text" name="username" className="form-control" />
               </div>
               <div className="mb-3">
                 <label className="form-label">Password</label>

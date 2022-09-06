@@ -6,12 +6,12 @@ async function loginRoute(req, res) {
 
   try {
     const response = await axios.post("http://localhost:3001/api/login", {
-      email: username,
+      username,
       password,
     });
 
     req.session.user = response.data.data.user;
-    req.session.jwt = response.data.data.token;
+    req.session.token = response.data.data.token;
     await req.session.save();
 
     res.json(response.data);
