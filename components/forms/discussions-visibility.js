@@ -4,7 +4,7 @@ import { Col, FormCheck, Row } from "react-bootstrap";
 import InvestorSelector from "../search/investors/investor-selector";
 import StartupSelector from "../search/startups/startup-selector";
 
-export default function Visibility(props) {
+export default function DiscussionVisibility(props) {
   const [selectedVisibility, setSelectedVisibility] = useState("");
 
   const options = [
@@ -15,10 +15,6 @@ export default function Visibility(props) {
     {
       key: "startupsOnly",
       label: "All startups",
-    },
-    {
-      key: "investorsOnly",
-      label: "All investors",
     },
     {
       key: "startupIds",

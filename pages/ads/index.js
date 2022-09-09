@@ -8,28 +8,33 @@ import { sessionOptions } from "../../lib/session";
 import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
-import DiscussionModal from "../../components/discussions/discussion-modal";
+import { useUser } from "../../context/user-hook";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
 
-export default function Discussions() {
+export default function Ads() {
   const [news, setNews] = useState([]);
 
   useEffect(() => {
-    axiosInstance.get("discussions").then((response) => {
+    NotificationManager.info("Info message");
+    axiosInstance.get("news").then((response) => {
       setNews(response.data.data);
     });
   }, []);
 
   function requestDelete(newsId) {
-    axiosInstance.post(`discussions/delete-request/${newsId}`).then((res) => {
-      axiosInstance.get("discussions").then((response) => {
+    axiosInstance.post(`news/delete-request/${newsId}`).then((res) => {
+      axiosInstance.get("news").then((response) => {
         setNews(response.data.data);
       });
     });
   }
 
   function archive(newsId) {
-    axiosInstance.post(`discussions/archive/${newsId}`).then((res) => {
-      axiosInstance.get("discussions").then((response) => {
+    axiosInstance.post(`news/archive/${newsId}`).then((res) => {
+      axiosInstance.get("news").then((response) => {
         setNews(response.data.data);
       });
     });
@@ -87,7 +92,6 @@ export default function Discussions() {
       button: true,
       cell: (row) => (
         <div>
-          <DiscussionModal discussionId={row.id} />
           {renderArchiveButton(row)}
           {renderRequestDeleteButton(row)}
         </div>
@@ -97,19 +101,19 @@ export default function Discussions() {
 
   return (
     <div>
-      <h1>Discussions</h1>
+      <h1>Ads</h1>
       <hr />
-
-      <Link href="/discussions/create">
+      <Link href="/ads/create">
         <Button variant="primary" type="submit">
-          Create discussion
+          Create ads
         </Button>
       </Link>
       <DataTable columns={columns} data={news} />
+      <NotificationContainer />
     </div>
   );
 }
 
-Discussions.getLayout = function getLayout(page) {
+Ads.getLayout = function getLayout(page) {
   return <AuthLayout>{page}</AuthLayout>;
 };

@@ -8,28 +8,34 @@ import { sessionOptions } from "../../lib/session";
 import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
-import DiscussionModal from "../../components/discussions/discussion-modal";
+import { useUser } from "../../context/user-hook";
 
-export default function Discussions() {
-  const [news, setNews] = useState([]);
+export default function Groups() {
+  const [groups, setGroups] = useState([]);
+
+  const loadGroups = async () => {
+    const {
+      data: { data },
+    } = await axiosInstance.get("startup-groups");
+
+    setGroups(data);
+  };
 
   useEffect(() => {
-    axiosInstance.get("discussions").then((response) => {
-      setNews(response.data.data);
-    });
+    loadGroups();
   }, []);
 
   function requestDelete(newsId) {
-    axiosInstance.post(`discussions/delete-request/${newsId}`).then((res) => {
-      axiosInstance.get("discussions").then((response) => {
+    axiosInstance.post(`news/delete-request/${newsId}`).then((res) => {
+      axiosInstance.get("news").then((response) => {
         setNews(response.data.data);
       });
     });
   }
 
   function archive(newsId) {
-    axiosInstance.post(`discussions/archive/${newsId}`).then((res) => {
-      axiosInstance.get("discussions").then((response) => {
+    axiosInstance.post(`news/archive/${newsId}`).then((res) => {
+      axiosInstance.get("news").then((response) => {
         setNews(response.data.data);
       });
     });
@@ -63,13 +69,9 @@ export default function Discussions() {
 
   const columns = [
     {
-      name: "Title",
-      selector: (row) => row.title,
+      name: "Name",
+      selector: (row) => row.name,
       sortable: true,
-    },
-    {
-      name: "Visibility",
-      selector: (row) => row.visibility,
     },
     {
       name: "Status",
@@ -87,9 +89,8 @@ export default function Discussions() {
       button: true,
       cell: (row) => (
         <div>
-          <DiscussionModal discussionId={row.id} />
-          {renderArchiveButton(row)}
-          {renderRequestDeleteButton(row)}
+          {/* {renderArchiveButton(row)}
+          {renderRequestDeleteButton(row)} */}
         </div>
       ),
     },
@@ -97,19 +98,18 @@ export default function Discussions() {
 
   return (
     <div>
-      <h1>Discussions</h1>
+      <h1>Groups</h1>
       <hr />
-
-      <Link href="/discussions/create">
+      <Link href="/groups/create">
         <Button variant="primary" type="submit">
-          Create discussion
+          Create InputGroup
         </Button>
       </Link>
-      <DataTable columns={columns} data={news} />
+      <DataTable columns={columns} data={groups} />
     </div>
   );
 }
 
-Discussions.getLayout = function getLayout(page) {
+Groups.getLayout = function getLayout(page) {
   return <AuthLayout>{page}</AuthLayout>;
 };

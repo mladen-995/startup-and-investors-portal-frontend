@@ -16,197 +16,106 @@ import { axiosInstance } from "../../lib/axios";
 import axios from "axios";
 import Select from "react-select";
 import * as Yup from "yup";
-
-export const getServerSideProps = withIronSessionSsr(async function ({
-  req,
-  res,
-}) {
-  const user = req.session.user;
-  const token = req.session.jwt;
-
-  if (!user) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: { user, token },
-  };
-},
-sessionOptions);
+import StartupSelector from "../../components/search/startups/startup-selector";
+import NewsCategorySelect from "../../components/forms/news-category-select";
+import Visibility from "../../components/forms/visibility";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
+import CustomInput from "../../components/inputs/custom-input";
+import DiscussionVisibility from "../../components/forms/discussions-visibility";
 
 export default function DiscussionCreate({ user, token }) {
-  const NewsCreateSchema = Yup.object().shape({
+  const [loading, setLoading] = useState(false);
+
+  const DiscussionCreateSchema = Yup.object().shape({
     title: Yup.string().required("Required"),
+    text: Yup.string().required("Required"),
+    visibility: Yup.string().required("Required"),
   });
 
-  function handleSubmit(values) {
-    axiosInstance.post("discussions", values).then((res) => {
-      console.log(res);
-    });
-  }
+  useEffect(() => {
+    NotificationManager.info("Info message");
+  }, []);
 
-  function handleChange(event) {
-    alert(1);
-    console.log(event);
-  }
+  const handleSubmit = async (values) => {
+    setLoading(true);
+
+    await axiosInstance.post("discussions", values);
+
+    setLoading(false);
+
+    NotificationManager.info("Info message");
+
+    Router.push("/discussions");
+  };
 
   return (
     <div>
       <h1>Create discussion</h1>
+      <hr />
+
       <Formik
         initialValues={{
           title: "",
           text: "",
           visibility: "",
+          visibilityPairObject: [],
         }}
-        validationSchema={NewsCreateSchema}
+        validationSchema={DiscussionCreateSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, setFieldValue }) => (
           <Form noValidate>
-            <Field id="title" name="title">
-              {({ field }) => (
-                <div>
-                  <FormGroup className="mb-3">
-                    <FormLabel>
-                      Title <span className="text-danger">*</span>
-                    </FormLabel>
-                    <FormControl
-                      id="title"
-                      type={"text"}
-                      value={field.value}
-                      onChange={field.onChange}
-                      className={errors.title ? "is-invalid" : null}
-                    />
-                    {errors.title ? (
-                      <div className="invalid-feedback">{errors.title}</div>
-                    ) : null}
-                  </FormGroup>
-                </div>
-              )}
-            </Field>
+            <CustomInput
+              name="title"
+              label="Title"
+              errors={errors}
+              touched={touched}
+              required={true}
+            />
 
             <FormGroup className="mb-3">
-              <FormLabel>Text</FormLabel>
+              <FormLabel>
+                Text <span className="text-danger">*</span>
+              </FormLabel>
               <Field
                 id="text"
                 name="text"
                 as="textarea"
                 className="form-control"
               />
+              {errors.text && touched.text ? (
+                <div className="text-danger">{errors.text}</div>
+              ) : null}
             </FormGroup>
 
             <h3>Visibility</h3>
 
             <div className="mb-3">
-              <Field
-                type="radio"
+              <DiscussionVisibility
                 name="visibility"
-                id="visibility-all"
-                value="all"
-              >
-                {({ field }) => (
-                  <FormCheck
-                    inline
-                    name="visibility"
-                    label="All"
-                    type="radio"
-                    id="visibility-all"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              </Field>
-
-              <Field
-                type="radio"
-                name="visibility"
-                id="visibility-startups-all"
-                value="startupsOnly"
-              >
-                {({ field }) => (
-                  <FormCheck
-                    inline
-                    name="visibility"
-                    label="All startups"
-                    type="radio"
-                    id="visibility-startups-all"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              </Field>
-
-              <Field
-                type="radio"
-                name="visibility"
-                id="visibility-investors-all"
-                value="investorsOnly"
-              >
-                {({ field }) => (
-                  <FormCheck
-                    inline
-                    name="visibility"
-                    label="All investors"
-                    type="radio"
-                    id="visibility-investors-all"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              </Field>
-
-              <Field
-                type="radio"
-                name="visibility"
-                id="visibility-startups-certain"
-                value="startupIds"
-              >
-                {({ field }) => (
-                  <FormCheck
-                    inline
-                    name="visibility"
-                    label="Certain startups"
-                    type="radio"
-                    id="visibility-startups-certain"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              </Field>
-
-              <Field
-                type="radio"
-                name="visibility"
-                id="visibility-investors-certain"
-                value="investorIds"
-                onChange={handleChange}
-              >
-                {({ field }) => (
-                  <FormCheck
-                    inline
-                    name="visibility"
-                    label="Certain investors"
-                    type="radio"
-                    id="visibility-investors-certain"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              </Field>
+                childrenName="visibilityPairObject"
+                setFieldValue={setFieldValue}
+                errors={errors}
+                touched={touched}
+              />
             </div>
 
-            <Button variant="primary" type="submit" className="mt-3">
-              Submit
+            <hr />
+            <Button
+              variant="primary"
+              type="submit"
+              className="mt-3"
+              disabled={loading}
+            >
+              Create
             </Button>
           </Form>
         )}
       </Formik>
+      <NotificationContainer />
     </div>
   );
 }

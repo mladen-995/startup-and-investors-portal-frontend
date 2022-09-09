@@ -16,9 +16,13 @@ export default function CustomInput(props) {
               type={props.type ? props.type : "text"}
               value={field.value}
               onChange={field.onChange}
-              className={props.errors[props.name] ? "is-invalid" : null}
+              className={
+                props.errors[props.name] && props.touched[props.name]
+                  ? "is-invalid"
+                  : null
+              }
             />
-            {props.errors[props.name] ? (
+            {props.errors[props.name] && props.touched[props.name] ? (
               <div className="invalid-feedback">{props.errors[props.name]}</div>
             ) : null}
           </FormGroup>

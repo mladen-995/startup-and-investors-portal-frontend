@@ -14,32 +14,32 @@ import {
 } from "react-bootstrap";
 import { axiosInstance } from "../../lib/axios";
 import axios from "axios";
+import CustomInput from "../../components/inputs/custom-input";
+import DatePicker from "react-datepicker";
+import AdsVisibility from "../../components/ads/ads-visibility";
+import * as Yup from "yup";
 
-export const getServerSideProps = withIronSessionSsr(async function ({
-  req,
-  res,
-}) {
-  const user = req.session.user;
-  const token = req.session.jwt;
+export default function AdsCreate() {
+  const AdCreateSchema = Yup.object().shape({
+    title: Yup.string().required("Required"),
+    text: Yup.string().required("Required"),
+    expiryDate: Yup.string().required("Required"),
+    visibility: Yup.string().required("Required"),
+  });
 
-  if (!user) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: { user, token },
-  };
-},
-sessionOptions);
-
-export default function AdsCreate({ user, token }) {
   function handleSubmit(values) {
-    axiosInstance.post("surveys", values).then((response) => {
+    let requestValues = {};
+
+    for (const key in values) {
+      if (!values[key]) {
+        requestValues[key] = null;
+      } else {
+        requestValues[key] = values[key];
+      }
+    }
+
+    console.log(requestValues);
+    axiosInstance.post("ads", requestValues).then((response) => {
       console.log(response);
     });
   }
@@ -49,86 +49,65 @@ export default function AdsCreate({ user, token }) {
       initialValues={{
         title: "",
         text: "",
-        expiryDate: "",
+        expiryDate: null,
         visibility: false,
       }}
+      validationSchema={AdCreateSchema}
       onSubmit={handleSubmit}
     >
-      {({ values }) => (
+      {({ errors, touched, setFieldValue }) => (
         <Form>
-          <Field id="title" name="title">
-            {({ field, form, meta }) => (
+          <CustomInput
+            name="title"
+            label="Title"
+            errors={errors}
+            touched={touched}
+            required={true}
+          />
+
+          <FormGroup className="mb-3">
+            <FormLabel>
+              Text <span className="text-danger">*</span>
+            </FormLabel>
+            <Field
+              id="text"
+              name="text"
+              as="textarea"
+              className="form-control"
+            />
+            {errors.text && touched.text ? (
+              <div className="text-danger">{errors.text}</div>
+            ) : null}
+          </FormGroup>
+
+          <Field name="expiryDate">
+            {({ field, meta, form: { setFieldValue } }) => (
               <FormGroup className="mb-3">
-                <FormLabel>Title</FormLabel>
-                <FormControl
-                  id="title"
-                  type={"text"}
+                <FormLabel>
+                  Expiry date <span className="text-danger">*</span>
+                </FormLabel>
+                <DatePicker
+                  className="form-control"
+                  isClearable
                   value={field.value}
-                  onChange={field.onChange}
+                  onChange={(val) => {
+                    setFieldValue(field.name, val);
+                  }}
+                  selected={(field.value && new Date(field.value)) || null}
+                  dateFormat="dd/MM/yyyy"
                 />
               </FormGroup>
             )}
           </Field>
 
-          <Field id="public" name="public" type="checkbox">
-            {({ field, form, meta }) => (
-              <FormCheck
-                className="mb-3"
-                type="checkbox"
-                id="public"
-                label="Public"
-                value={field.value}
-                onChange={field.onChange}
-              />
-            )}
-          </Field>
-
-          <FieldArray name="questions">
-            {({ insert, remove, push }) => (
-              <div>
-                <div className="d-inline-flex">
-                  <h3>Questions</h3>
-                  <Button
-                    variant="primary"
-                    type="button"
-                    className="ms-3"
-                    onClick={() => push("")}
-                  >
-                    Add question
-                  </Button>
-                </div>
-
-                {values.questions.length > 0 &&
-                  values.questions.map((question, index) => (
-                    <Field
-                      name={`questions.${index}`}
-                      id={`questions.${index}`}
-                      key={`questions.${index}`}
-                    >
-                      {({ field, form, meta }) => (
-                        <FormGroup className="mb-3">
-                          <FormLabel>Question #{index + 1}</FormLabel>
-                          <InputGroup>
-                            <FormControl
-                              id={`questions.${index}`}
-                              type={"text"}
-                              value={field.value}
-                              onChange={field.onChange}
-                            />
-                            <Button
-                              variant="outline-danger"
-                              onClick={() => remove(index)}
-                            >
-                              X
-                            </Button>
-                          </InputGroup>
-                        </FormGroup>
-                      )}
-                    </Field>
-                  ))}
-              </div>
-            )}
-          </FieldArray>
+          <AdsVisibility
+            name="visibility"
+            label="Title"
+            errors={errors}
+            touched={touched}
+            setFieldValue={setFieldValue}
+            childrenName="visibilityPairObject"
+          />
 
           <Button variant="primary" type="submit">
             Submit

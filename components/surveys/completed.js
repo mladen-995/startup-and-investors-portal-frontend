@@ -19,8 +19,10 @@ import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
 import { Field, FieldArray, Form, Formik } from "formik";
 import axios from "axios";
+import { useUser } from "../../context/user-hook";
 
 export default function CompletedSurveys() {
+  const user = useUser();
   const [surveys, setSurveys] = useState([]);
   const [show, setShow] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -74,9 +76,12 @@ export default function CompletedSurveys() {
       button: true,
       cell: (row) => (
         <>
-          <Button variant="info" size="sm" onClick={() => handleShow(row)}>
-            Stats
-          </Button>
+          {(row.public ||
+            (user?.isInvestor() && row.createdBy == user?.user?.id)) && (
+            <Button variant="info" size="sm" onClick={() => handleShow(row)}>
+              Stats
+            </Button>
+          )}
         </>
       ),
     },
@@ -97,7 +102,7 @@ export default function CompletedSurveys() {
           <h5>Questions</h5>
           <Accordion>
             {questions.map((question, index) => (
-              <Accordion.Item eventKey={index}>
+              <Accordion.Item eventKey={index} key={index}>
                 <Accordion.Header onClick={() => loadAnswers(question.id)}>
                   #{index + 1} {question.question}
                 </Accordion.Header>

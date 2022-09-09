@@ -53,9 +53,15 @@ export default function AuthLayout({ children }) {
                 <Link href="/discussions">
                   <Nav.Link href="#home">Discussions</Nav.Link>
                 </Link>
-                <Nav.Link href="#home">Groups</Nav.Link>
-                <Nav.Link href="#home">Notifications</Nav.Link>
-                <Nav.Link href="#home">Ads</Nav.Link>
+                <Link href="/groups">
+                  <Nav.Link href="#home">Groups</Nav.Link>
+                </Link>
+                <Link href="/ads">
+                  <Nav.Link href="#home">Ads</Nav.Link>
+                </Link>
+                <Link href="/notifications">
+                  <Nav.Link href="#home">Notifications</Nav.Link>
+                </Link>
                 <NavDropdown title="Dropdown" id="basic-nav-dropdown">
                   <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
                   <NavDropdown.Item href="#action/3.2">

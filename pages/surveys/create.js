@@ -1,8 +1,4 @@
-import { useEffect, useState } from "react";
-import Router from "next/router";
-import { withIronSessionSsr } from "iron-session/next";
 import AuthLayout from "../../components/layout-auth";
-import { sessionOptions } from "../../lib/session";
 import { Field, FieldArray, Form, Formik } from "formik";
 import {
   Button,
@@ -15,13 +11,17 @@ import {
 import { axiosInstance } from "../../lib/axios";
 import * as Yup from "yup";
 import CustomInput from "../../components/inputs/custom-input";
+import SweetAlert from "react-bootstrap-sweetalert";
+import { useState } from "react";
+import Router from "next/router";
 
 export default function SurveysCreate() {
-  function handleSubmit(values) {
-    axiosInstance.post("surveys", values).then((response) => {
-      console.log(response);
-    });
-  }
+  const [notificationAlertShow, setNotificationAlertShow] = useState(false);
+
+  const handleSubmit = async (values) => {
+    await axiosInstance.post("surveys", values);
+    setNotificationAlertShow(true);
+  };
 
   const createSurveySchema = Yup.object().shape({
     title: Yup.string().required("Field is required."),
@@ -31,6 +31,18 @@ export default function SurveysCreate() {
   return (
     <div>
       <h1>Create survey</h1>
+
+      <SweetAlert
+        title="Success"
+        type="success"
+        show={notificationAlertShow}
+        onConfirm={() => {
+          Router.push("/surveys");
+          setNotificationAlertShow(false);
+        }}
+      >
+        Survey is successfully created.
+      </SweetAlert>
 
       <Formik
         initialValues={{
@@ -48,6 +60,7 @@ export default function SurveysCreate() {
               required="true"
               name="title"
               errors={errors}
+              touched={touched}
             />
 
             <Field id="public" name="public" type="checkbox">
@@ -103,6 +116,9 @@ export default function SurveysCreate() {
                               <Button
                                 variant="outline-danger"
                                 onClick={() => remove(index)}
+                                disabled={
+                                  values.questions.length === 1 ? true : null
+                                }
                               >
                                 X
                               </Button>

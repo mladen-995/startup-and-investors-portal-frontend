@@ -16,31 +16,10 @@ import {
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
 import { Field, FieldArray, Form, Formik } from "formik";
-import axios from "axios";
 import * as Yup from "yup";
+import SweetAlert from "react-bootstrap-sweetalert";
 
-export const getServerSideProps = withIronSessionSsr(async function ({
-  req,
-  res,
-}) {
-  const user = req.session.user;
-
-  if (!user) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: { user, surveys: {} },
-  };
-},
-sessionOptions);
-
-export default function NotCompletedSurveys(props) {
+export default function NotCompletedSurveys() {
   const [surveys, setSurveys] = useState([]);
   const [show, setShow] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -72,7 +51,7 @@ export default function NotCompletedSurveys(props) {
     loadSurveys();
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     if (values.answers.length != questions.length) {
       alert("Fill in all answers.");
       return;
@@ -84,9 +63,8 @@ export default function NotCompletedSurveys(props) {
       }),
     };
 
-    axiosInstance.post(`surveys/answer/${surveyId}`, answers).then((res) => {
-      alert("uspesno");
-    });
+    await axiosInstance.post(`surveys/answer/${surveyId}`, answers);
+    setNotificationAlertShow(true);
   };
 
   useEffect(() => {
@@ -111,6 +89,18 @@ export default function NotCompletedSurveys(props) {
       button: true,
       cell: (row) => (
         <>
+          <SweetAlert
+            title="Success"
+            type="success"
+            show={notificationAlertShow}
+            onConfirm={() => {
+              Router.push("/surveys");
+              setNotificationAlertShow(false);
+            }}
+          >
+            Survey is successfully completed.
+          </SweetAlert>
+
           <Dropdown>
             <Dropdown.Toggle variant="success" size="sm" id="dropdown-basic">
               Actions
@@ -149,6 +139,7 @@ export default function NotCompletedSurveys(props) {
                 <Modal.Title>Modal heading</Modal.Title>
               </Modal.Header>
               <Modal.Body>
+                <pre>{JSON.stringify(errors)}</pre>
                 <FieldArray name="answers">
                   <>
                     {questions.map((question, index) => (
@@ -165,11 +156,13 @@ export default function NotCompletedSurveys(props) {
                               type={"text"}
                               value={field.value || ""}
                               onChange={field.onChange}
-                              className={errors.title ? "is-invalid" : null}
+                              className={
+                                errors[field.name] ? "is-invalid" : null
+                              }
                             />
-                            {errors.title ? (
+                            {errors[field.name] ? (
                               <div className="invalid-feedback">
-                                {errors.title}
+                                {errors[field.name]}
                               </div>
                             ) : null}
                           </FormGroup>

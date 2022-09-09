@@ -24,36 +24,32 @@ import {
   NotificationManager,
 } from "react-notifications";
 import CustomInput from "../../components/inputs/custom-input";
+import DiscussionVisibility from "../../components/forms/discussions-visibility";
+import AdsVisibility from "../../components/ads/ads-visibility";
 import SweetAlert from "react-bootstrap-sweetalert";
 
-export default function NewsCreate({ user, token }) {
+export default function DiscussionCreate({ user, token }) {
   const [loading, setLoading] = useState(false);
   const [notificationAlertShow, setNotificationAlertShow] = useState(false);
 
-  const NewsCreateSchema = Yup.object().shape({
+  const DiscussionCreateSchema = Yup.object().shape({
     title: Yup.string().required("Required"),
     text: Yup.string().required("Required"),
     visibility: Yup.string().required("Required"),
   });
 
   const handleSubmit = async (values) => {
-    let requestValues = {};
+    setLoading(true);
 
-    for (const key in values) {
-      if (!values[key]) {
-        requestValues[key] = null;
-      } else {
-        requestValues[key] = values[key];
-      }
-    }
+    await axiosInstance.post("notifications", values);
 
-    await axiosInstance.post("news", requestValues);
+    setLoading(false);
     setNotificationAlertShow(true);
   };
 
   return (
     <div>
-      <h1>Create news</h1>
+      <h1>Create notification</h1>
       <hr />
 
       <SweetAlert
@@ -61,22 +57,22 @@ export default function NewsCreate({ user, token }) {
         type="success"
         show={notificationAlertShow}
         onConfirm={() => {
-          Router.push("/news");
+          Router.push("/notifications");
           setNotificationAlertShow(false);
         }}
       >
-        News is successfully created.
+        Notification is successfully created.
       </SweetAlert>
 
       <Formik
         initialValues={{
           title: "",
           text: "",
-          categoryId: "",
+          isEmailNotification: false,
           visibility: "",
           visibilityPairObject: [],
         }}
-        validationSchema={NewsCreateSchema}
+        validationSchema={DiscussionCreateSchema}
         onSubmit={handleSubmit}
       >
         {({ errors, touched, setFieldValue }) => (
@@ -88,8 +84,6 @@ export default function NewsCreate({ user, token }) {
               touched={touched}
               required={true}
             />
-
-            <NewsCategorySelect name="categoryId" errors={errors} />
 
             <FormGroup className="mb-3">
               <FormLabel>
@@ -106,10 +100,27 @@ export default function NewsCreate({ user, token }) {
               ) : null}
             </FormGroup>
 
+            <Field
+              id="isEmailNotification"
+              name="isEmailNotification"
+              type="checkbox"
+            >
+              {({ field, form, meta }) => (
+                <FormCheck
+                  className="mb-3"
+                  type="checkbox"
+                  id="isEmailNotification"
+                  label="Email notification"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
+            </Field>
+
             <h3>Visibility</h3>
 
             <div className="mb-3">
-              <Visibility
+              <AdsVisibility
                 name="visibility"
                 childrenName="visibilityPairObject"
                 setFieldValue={setFieldValue}
@@ -130,10 +141,11 @@ export default function NewsCreate({ user, token }) {
           </Form>
         )}
       </Formik>
+      <NotificationContainer />
     </div>
   );
 }
 
-NewsCreate.getLayout = function getLayout(page) {
+DiscussionCreate.getLayout = function getLayout(page) {
   return <AuthLayout>{page}</AuthLayout>;
 };
