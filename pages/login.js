@@ -1,96 +1,95 @@
 import Button from "react-bootstrap/Button";
-// import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 import Alert from "react-bootstrap/Alert";
 import Router from "next/router";
-import { Formik, Field, Form } from "formik";
-import Cookies from "js-cookie";
-import { useEffect } from "react";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import CustomInput from "../components/inputs/custom-input";
+import { useUser } from "../context/user-hook";
 
 export default function Login() {
+  const user = useUser();
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    if (Cookies.get("token")) {
+    if (user?.isLoggedIn) {
       Router.push("my-profile");
     }
-  });
+  }, [user]);
 
-  function handleLogin(values) {
+  const handleLogin = async (values) => {
     setLoading(true);
-    setError("");
+    setErrorMessage("");
 
-    const { username, password } = values;
+    try {
+      await axios.post("http://localhost:3000/api/login", values);
+      Router.push("/my-profile");
+    } catch (error) {
+      if (error.response.status == 422) {
+        setErrorMessage("Username or Password not valid!");
+      }
+      setLoading(false);
+    }
+  };
 
-    axios
-      .post("http://localhost:3000/api/login", { username, password })
-      .then((response) => {
-        const data = response.data.data;
-        Cookies.set("token", data.token);
-        Cookies.set("user", JSON.stringify(data.user));
-
-        Router.push("/my-profile");
-      })
-      .catch((response) => {
-        if (response.response.status === 401) {
-          setError(response.response.data.message);
-        }
-      })
-      .then(() => {
-        setLoading(false);
-      });
+  if (user && !user.isLoggedIn) {
+    return (
+      <Container className="d-flex justify-content-center">
+        <Card className="mt-5" style={{ minWidth: "500px", width: "50%" }}>
+          <Card.Body>
+            <h1>Login</h1>
+            <Formik
+              initialValues={{
+                username: "",
+                password: "",
+              }}
+              validationSchema={Yup.object().shape({
+                username: Yup.string().required("Field is required."),
+                password: Yup.string().required("Field is required."),
+              })}
+              onSubmit={handleLogin}
+            >
+              {({ errors, touched, setFieldValue }) => (
+                <Form>
+                  <CustomInput
+                    name="username"
+                    label="Username"
+                    errors={errors}
+                    touched={touched}
+                    required={true}
+                  />
+                  <CustomInput
+                    name="password"
+                    label="Password"
+                    errors={errors}
+                    touched={touched}
+                    required={true}
+                    type="password"
+                  />
+                  {errorMessage ? (
+                    <Alert variant="danger">{errorMessage}</Alert>
+                  ) : null}
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="me-3"
+                    disabled={isLoading}
+                  >
+                    Login
+                  </Button>
+                  You don't have an account?{" "}
+                  <Link href="/register">Click here</Link> to register.
+                </Form>
+              )}
+            </Formik>
+          </Card.Body>
+        </Card>
+      </Container>
+    );
   }
-
-  return (
-    <Container className="d-flex justify-content-center">
-      <Card className="mt-5" style={{ minWidth: "500px", width: "50%" }}>
-        <Card.Body>
-          <h1>Login</h1>
-          <Formik
-            initialValues={{
-              username: "",
-              password: "",
-            }}
-            onSubmit={handleLogin}
-          >
-            <Form>
-              <div className="mb-3">
-                <label className="form-label">Username</label>
-                <Field type="text" name="username" className="form-control" />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Password</label>
-                <Field
-                  type="password"
-                  name="password"
-                  className="form-control"
-                />
-              </div>
-              {error ? <Alert variant="danger">{error}</Alert> : null}
-              <div className="col-12">
-                <button type="submit" className="btn btn-primary">
-                  Sign in
-                </button>
-              </div>
-              {/* <Button
-                variant="primary"
-                type="submit"
-                className="me-3"
-                disabled={isLoading}
-              >
-                Login
-              </Button> */}
-              You don't have an account?{" "}
-              <Link href="/register">Click here</Link> to register.
-            </Form>
-          </Formik>
-        </Card.Body>
-      </Card>
-    </Container>
-  );
 }

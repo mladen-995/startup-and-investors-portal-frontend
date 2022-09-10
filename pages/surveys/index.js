@@ -95,7 +95,7 @@ export default function Surveys() {
     },
   ];
 
-  if (user?.isInvestor()) {
+  if (user?.isInvestor() || user?.isAdministrator()) {
     return (
       <div>
         <h1>Surveys</h1>

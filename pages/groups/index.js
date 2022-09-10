@@ -9,8 +9,14 @@ import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
 import { useUser } from "../../context/user-hook";
+import DeleteButton from "../../components/delete-button";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
 
 export default function Groups() {
+  const user = useUser();
   const [groups, setGroups] = useState([]);
 
   const loadGroups = async () => {
@@ -41,26 +47,31 @@ export default function Groups() {
     });
   }
 
-  function renderRequestDeleteButton(row) {
-    if (!row.requestedDeletion) {
+  const renderDeleteButton = (row) => {
+    if (user?.isAdministrator()) {
       return (
-        <Button
-          variant="danger"
-          size="sm"
-          onClick={() => {
-            requestDelete(row.id);
+        <DeleteButton
+          itemId={row.id}
+          itemTitle={row.title}
+          deleteUrlPath="startup-groups"
+          onDelete={() => {
+            NotificationManager.success("Group is successfully deleted.");
+            loadGroups();
           }}
-        >
-          Delete
-        </Button>
+        />
       );
     }
-  }
+  };
 
   function renderArchiveButton(row) {
     if (!row.isArchived) {
       return (
-        <Button variant="warning" size="sm" onClick={() => archive(row.id)}>
+        <Button
+          variant="warning"
+          className="me-2"
+          size="sm"
+          onClick={() => archive(row.id)}
+        >
           Archive
         </Button>
       );
@@ -86,11 +97,10 @@ export default function Groups() {
     },
     {
       name: "Actions",
-      button: true,
       cell: (row) => (
         <div>
-          {/* {renderArchiveButton(row)}
-          {renderRequestDeleteButton(row)} */}
+          {renderArchiveButton(row)}
+          {renderDeleteButton(row)}
         </div>
       ),
     },
@@ -102,10 +112,11 @@ export default function Groups() {
       <hr />
       <Link href="/groups/create">
         <Button variant="primary" type="submit">
-          Create InputGroup
+          Create group
         </Button>
       </Link>
       <DataTable columns={columns} data={groups} />
+      <NotificationContainer />
     </div>
   );
 }

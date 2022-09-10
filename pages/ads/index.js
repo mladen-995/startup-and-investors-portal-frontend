@@ -13,15 +13,22 @@ import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
+import DeleteButton from "../../components/delete-button";
+import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
 
 export default function Ads() {
-  const [news, setNews] = useState([]);
+  const user = useUser();
+  const [ads, setAds] = useState([]);
+
+  const loadAds = async () => {
+    const {
+      data: { data },
+    } = await axiosInstance.get("ads");
+    setAds(data);
+  };
 
   useEffect(() => {
-    NotificationManager.info("Info message");
-    axiosInstance.get("news").then((response) => {
-      setNews(response.data.data);
-    });
+    loadAds();
   }, []);
 
   function requestDelete(newsId) {
@@ -39,6 +46,40 @@ export default function Ads() {
       });
     });
   }
+
+  const renderDeclineDeleteRequestButton = (row) => {
+    if (row.requestedDeletion && user?.isAdministrator()) {
+      return (
+        <DeclineDeleteRequestButton
+          itemId={row.id}
+          itemTitle={row.title}
+          declineUrlPath="ads/decline-delete-request"
+          onDecline={() => {
+            NotificationManager.success(
+              "Delete request is successfully declined."
+            );
+            loadAds();
+          }}
+        />
+      );
+    }
+  };
+
+  const renderDeleteButton = (row) => {
+    if (user?.isAdministrator()) {
+      return (
+        <DeleteButton
+          itemId={row.id}
+          itemTitle={row.title}
+          deleteUrlPath="ads"
+          onDelete={() => {
+            NotificationManager.success("Ad is successfully deleted.");
+            loadAds();
+          }}
+        />
+      );
+    }
+  };
 
   function renderRequestDeleteButton(row) {
     if (!row.requestedDeletion) {
@@ -89,11 +130,11 @@ export default function Ads() {
     },
     {
       name: "Actions",
-      button: true,
       cell: (row) => (
         <div>
           {renderArchiveButton(row)}
-          {renderRequestDeleteButton(row)}
+          {renderDeclineDeleteRequestButton(row)}
+          {renderDeleteButton(row)}
         </div>
       ),
     },
@@ -108,7 +149,7 @@ export default function Ads() {
           Create ads
         </Button>
       </Link>
-      <DataTable columns={columns} data={news} />
+      <DataTable columns={columns} data={ads} />
       <NotificationContainer />
     </div>
   );

@@ -52,7 +52,9 @@ export default function DiscussionModal({ discussionId }) {
 
   return (
     <>
-      <Button onClick={openModal}>Show</Button>
+      <Button onClick={openModal} size="sm" className="me-2">
+        Show
+      </Button>
       <Modal show={show} onHide={handleClose} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>{discussion?.title}</Modal.Title>
@@ -73,7 +75,8 @@ export default function DiscussionModal({ discussionId }) {
               </Card.Body>
             </Card>
           ))}
-          {discussionReplies.length && <hr />}
+          {discussionReplies.length == 0 && <p>No replies yet</p>}
+          <hr />
           <Formik
             initialValues={{
               text: "",

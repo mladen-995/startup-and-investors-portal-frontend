@@ -1,34 +1,33 @@
-import { getUser } from "../../services/user.service";
+import { getUser } from "../services/user.service";
 import React, { useEffect, useState } from "react";
 import Router from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import DataTable from "react-data-table-component";
-import AuthLayout from "../../components/layout-auth";
-import { sessionOptions } from "../../lib/session";
+import AuthLayout from "../components/layout-auth";
+import { sessionOptions } from "../lib/session";
 import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
-import { axiosInstance } from "../../lib/axios";
-import { useUser } from "../../context/user-hook";
+import { axiosInstance } from "../lib/axios";
+import { useUser } from "../context/user-hook";
 import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
 import SweetAlert from "react-bootstrap-sweetalert";
-import ResolveDeleteRequest from "../../components/resolve-delete-request";
-import DeleteButton from "../../components/delete-button";
-import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
+import ResolveDeleteRequest from "../components/resolve-delete-request";
+import DeleteButton from "../components/delete-button";
 
-export default function News() {
+export default function SearachRequests() {
   const user = useUser();
-  const [news, setNews] = useState([]);
+  const [searchRequests, setSearchRequests] = useState([]);
   const [resolveDeleteRequestPromptShow, setResolveDeleteRequestPromptShow] =
     useState(false);
 
-  const loadNews = async () => {
+  const loadSearchRequests = async () => {
     const {
       data: { data },
-    } = await axiosInstance.get("news");
-    setNews(data);
+    } = await axiosInstance.get("investor-search-requests");
+    setSearchRequests(data);
   };
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export default function News() {
       return;
     }
 
-    loadNews();
+    loadSearchRequests();
   }, [user]);
 
   const requestDelete = async (newsId) => {
@@ -65,24 +64,6 @@ export default function News() {
     }
   };
 
-  const renderDeclineDeleteRequestButton = (row) => {
-    if (row.requestedDeletion && user?.isAdministrator()) {
-      return (
-        <DeclineDeleteRequestButton
-          itemId={row.id}
-          itemTitle={row.title}
-          declineUrlPath="news/decline-delete-request"
-          onDecline={() => {
-            NotificationManager.success(
-              "Delete request is successfully declined."
-            );
-            loadNews();
-          }}
-        />
-      );
-    }
-  };
-
   const renderDeleteButton = (row) => {
     if (user?.isAdministrator()) {
       return (
@@ -100,11 +81,7 @@ export default function News() {
   };
 
   const renderRequestDeleteButton = (row) => {
-    if (
-      !row.requestedDeletion &&
-      user.user.id === row.createdBy &&
-      !user.isAdministrator()
-    ) {
+    if (!row.requestedDeletion && user.user.id === row.createdBy) {
       return (
         <Button
           variant="danger"
@@ -136,27 +113,24 @@ export default function News() {
 
   const columns = [
     {
-      name: "Title",
-      selector: (row) => row.title,
+      name: "Name",
+      selector: ({ user }) =>
+        `${user.firstName} ${user.middleName} ${user.lastName}`,
       sortable: true,
     },
     {
-      name: "Visibility",
-      selector: (row) => row.visibility,
-    },
-    {
-      name: "Status",
-      selector: (row) => row.requestedDeletion,
-      cell: (row) => renderStatus(row),
+      name: "Entity name",
+      selector: ({ user: { investorProfile } }) =>
+        investorProfile.legalEntityName,
+      sortable: true,
     },
     {
       name: "Actions",
       cell: (row) => (
         <div>
-          {renderArchiveButton(row)}
+          {/* {renderArchiveButton(row)}
           {renderRequestDeleteButton(row)}
-          {renderDeclineDeleteRequestButton(row)}
-          {renderDeleteButton(row)}
+          {renderDeleteButton(row)} */}
         </div>
       ),
     },
@@ -164,20 +138,14 @@ export default function News() {
 
   return (
     <div>
-      <h1>News</h1>
+      <h1>Search requests</h1>
       <hr />
-
-      <Link href="/news/create">
-        <Button variant="primary" type="submit">
-          Create news
-        </Button>
-      </Link>
-      <DataTable columns={columns} data={news} />
+      <DataTable columns={columns} data={searchRequests} />
       <NotificationContainer />
     </div>
   );
 }
 
-News.getLayout = function getLayout(page) {
+SearachRequests.getLayout = function getLayout(page) {
   return <AuthLayout>{page}</AuthLayout>;
 };

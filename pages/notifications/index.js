@@ -9,14 +9,26 @@ import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
 import { useUser } from "../../context/user-hook";
+import DeleteButton from "../../components/delete-button";
+import {
+  NotificationContainer,
+  NotificationManager,
+} from "react-notifications";
+import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
 
 export default function Notifications() {
-  const [news, setNews] = useState([]);
+  const user = useUser();
+  const [notifications, setNotifications] = useState([]);
+
+  const loadNotifications = async () => {
+    const {
+      data: { data },
+    } = await axiosInstance.get("notifications");
+    setNotifications(data);
+  };
 
   useEffect(() => {
-    axiosInstance.get("notifications").then((response) => {
-      setNews(response.data.data);
-    });
+    loadNotifications();
   }, []);
 
   function requestDelete(newsId) {
@@ -34,6 +46,42 @@ export default function Notifications() {
       });
     });
   }
+
+  const renderDeclineDeleteRequestButton = (row) => {
+    if (row.requestedDeletion && user?.isAdministrator()) {
+      return (
+        <DeclineDeleteRequestButton
+          itemId={row.id}
+          itemTitle={row.title}
+          declineUrlPath="notifications/decline-delete-request"
+          onDecline={() => {
+            NotificationManager.success(
+              "Delete request is successfully declined."
+            );
+            notifications();
+          }}
+        />
+      );
+    }
+  };
+
+  const renderDeleteButton = (row) => {
+    if (user?.isAdministrator()) {
+      return (
+        <DeleteButton
+          itemId={row.id}
+          itemTitle={row.title}
+          deleteUrlPath="notifications"
+          onDelete={() => {
+            NotificationManager.success(
+              "Notification is successfully deleted."
+            );
+            loadAds();
+          }}
+        />
+      );
+    }
+  };
 
   function renderRequestDeleteButton(row) {
     if (!row.requestedDeletion) {
@@ -84,11 +132,11 @@ export default function Notifications() {
     },
     {
       name: "Actions",
-      button: true,
       cell: (row) => (
         <div>
           {renderArchiveButton(row)}
-          {renderRequestDeleteButton(row)}
+          {renderDeclineDeleteRequestButton(row)}
+          {renderDeleteButton(row)}
         </div>
       ),
     },
@@ -103,7 +151,8 @@ export default function Notifications() {
           Create notification
         </Button>
       </Link>
-      <DataTable columns={columns} data={news} />
+      <DataTable columns={columns} data={notifications} />
+      <NotificationContainer />
     </div>
   );
 }
