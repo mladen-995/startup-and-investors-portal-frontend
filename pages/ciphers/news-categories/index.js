@@ -25,5 +25,9 @@ export default function NewsCategories() {
 }
 
 NewsCategories.getLayout = function getLayout(page) {
-  return <AuthLayout isProtected={true}>{page}</AuthLayout>;
+  return (
+    <AuthLayout isProtected={true} isAdmin={true}>
+      {page}
+    </AuthLayout>
+  );
 };

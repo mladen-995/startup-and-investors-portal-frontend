@@ -25,6 +25,7 @@ import {
 } from "react-notifications";
 import CustomInput from "../../components/inputs/custom-input";
 import DiscussionVisibility from "../../components/forms/discussions-visibility";
+import DiscussionCategorySelect from "../../components/forms/discussion-category-select";
 
 export default function DiscussionCreate({ user, token }) {
   const [loading, setLoading] = useState(false);
@@ -60,6 +61,7 @@ export default function DiscussionCreate({ user, token }) {
         initialValues={{
           title: "",
           text: "",
+          categoryId: "",
           visibility: "",
           visibilityPairObject: [],
         }}
@@ -75,6 +77,8 @@ export default function DiscussionCreate({ user, token }) {
               touched={touched}
               required={true}
             />
+
+            <DiscussionCategorySelect name="categoryId" errors={errors} />
 
             <FormGroup className="mb-3">
               <FormLabel>

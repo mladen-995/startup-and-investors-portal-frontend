@@ -13,7 +13,7 @@ import { axiosInstance } from "../../lib/axios";
 import * as Yup from "yup";
 import moment from "moment";
 
-export default function DiscussionModal({ discussionId }) {
+export default function DiscussionModal({ discussionId, viewOnly }) {
   const [show, setShow] = useState(false);
   const [discussion, setDiscussion] = useState(null);
   const [discussionReplies, setDiscussionReplies] = useState([]);
@@ -52,7 +52,7 @@ export default function DiscussionModal({ discussionId }) {
 
   return (
     <>
-      <Button onClick={openModal} size="sm" className="me-2">
+      <Button variant="info" onClick={openModal} size="sm" className="me-2">
         Show
       </Button>
       <Modal show={show} onHide={handleClose} size="lg">
@@ -76,34 +76,38 @@ export default function DiscussionModal({ discussionId }) {
             </Card>
           ))}
           {discussionReplies.length == 0 && <p>No replies yet</p>}
-          <hr />
-          <Formik
-            initialValues={{
-              text: "",
-            }}
-            validationSchema={Yup.object().shape({
-              text: Yup.string().required("Required"),
-            })}
-            onSubmit={handleSubmitReply}
-          >
-            {({ errors, touched, setFieldValue }) => (
-              <Form>
-                <FormGroup className="mb-3">
-                  <FormLabel>Your reply</FormLabel>
-                  <Field
-                    id="text"
-                    name="text"
-                    as="textarea"
-                    className="form-control"
-                  />
-                  {errors.text && touched.text ? (
-                    <div className="text-danger">{errors.text}</div>
-                  ) : null}
-                </FormGroup>
-                <Button type="submit">Submit reply</Button>
-              </Form>
-            )}
-          </Formik>
+          {!viewOnly && (
+            <>
+              <hr />
+              <Formik
+                initialValues={{
+                  text: "",
+                }}
+                validationSchema={Yup.object().shape({
+                  text: Yup.string().required("Required"),
+                })}
+                onSubmit={handleSubmitReply}
+              >
+                {({ errors, touched, setFieldValue }) => (
+                  <Form>
+                    <FormGroup className="mb-3">
+                      <FormLabel>Your reply</FormLabel>
+                      <Field
+                        id="text"
+                        name="text"
+                        as="textarea"
+                        className="form-control"
+                      />
+                      {errors.text && touched.text ? (
+                        <div className="text-danger">{errors.text}</div>
+                      ) : null}
+                    </FormGroup>
+                    <Button type="submit">Submit reply</Button>
+                  </Form>
+                )}
+              </Formik>
+            </>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

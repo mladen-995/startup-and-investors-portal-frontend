@@ -12,6 +12,8 @@ import {
 } from "react-notifications";
 import DeleteButton from "../../components/delete-button";
 import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
+import ArchiveButton from "../../components/archive-button";
+import RequestDeleteButton from "../../components/request-delete-button.js";
 
 export default function Discussions() {
   const user = useUser();
@@ -35,12 +37,6 @@ export default function Discussions() {
   const requestDelete = async (discussionId) => {
     await axiosInstance.post(`discussions/delete-request/${discussionId}`);
     NotificationManager.success("Delete request is successfully sent.");
-    loadDiscussions();
-  };
-
-  const archive = async (discussionId) => {
-    await axiosInstance.post(`discussions/archive/${discussionId}`);
-    NotificationManager.success("Discussion is successfully archived.");
     loadDiscussions();
   };
 
@@ -89,18 +85,21 @@ export default function Discussions() {
   };
 
   const renderRequestDeleteButton = (row) => {
-    if (!row.requestedDeletion && user?.user?.id === row.createdBy) {
+    if (
+      !row.requestedDeletion &&
+      user?.user?.id === row.createdBy &&
+      !user?.isAdministrator()
+    ) {
       return (
-        <Button
-          variant="danger"
-          size="sm"
-          className="me-2"
-          onClick={() => {
-            requestDelete(row.id);
+        <RequestDeleteButton
+          itemId={row.id}
+          itemTitle={row.title}
+          requestDeleteUrlPath="discussions"
+          onDeleteRequest={() => {
+            NotificationManager.success("Delete request is successfully sent.");
+            loadDiscussions();
           }}
-        >
-          Delete
-        </Button>
+        />
       );
     }
   };
@@ -108,14 +107,15 @@ export default function Discussions() {
   const renderArchiveButton = (row) => {
     if (!row.isArchived && user?.user?.id === row.createdBy) {
       return (
-        <Button
-          variant="warning"
-          size="sm"
-          className="me-2"
-          onClick={() => archive(row.id)}
-        >
-          Archive
-        </Button>
+        <ArchiveButton
+          itemId={row.id}
+          itemTitle={row.title}
+          archiveUrlPath="discussions"
+          onArchive={() => {
+            NotificationManager.success("Discussion is successfully archived.");
+            loadDiscussions();
+          }}
+        />
       );
     }
   };
@@ -137,9 +137,13 @@ export default function Discussions() {
     },
     {
       name: "Actions",
+      minWidth: "300px",
       cell: (row) => (
         <div>
-          <DiscussionModal discussionId={row.id} />
+          <DiscussionModal
+            discussionId={row.id}
+            viewOnly={user && !user.isLoggedIn}
+          />
           {renderArchiveButton(row)}
           {renderRequestDeleteButton(row)}
           {renderDeclineDeleteRequestButton(row)}

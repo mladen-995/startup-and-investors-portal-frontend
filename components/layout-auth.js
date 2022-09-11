@@ -11,18 +11,32 @@ import Link from "next/link";
 import { useUser } from "../context/user-hook";
 import { setToken } from "../lib/axios";
 
-export default function AuthLayout({ children, isProtected = false }) {
+export default function AuthLayout({
+  children,
+  isProtected = false,
+  isAdmin = false,
+}) {
   const router = useRouter();
   const user = useUser();
   const [showPage, setShowPage] = useState(false);
 
+  const userCanViewPage = () => {
+    if (isAdmin) {
+      return user.isAdministrator();
+    }
+
+    return true;
+  };
+
   useEffect(() => {
     if (!isProtected) {
       setShowPage(true);
-    } else if (user && user.isLoggedIn) {
-      setShowPage(true);
     } else if (user && !user.isLoggedIn) {
       router.push("/login");
+    } else if (user && userCanViewPage()) {
+      setShowPage(true);
+    } else if (user && !userCanViewPage()) {
+      router.push("/");
     }
   }, [user]);
 
@@ -73,7 +87,7 @@ export default function AuthLayout({ children, isProtected = false }) {
                 <Link href="/notifications">
                   <Nav.Link href="#home">Notifications</Nav.Link>
                 </Link>
-                {user && user.isLoggedIn && (
+                {user && user.isLoggedIn && user.isAdministrator() && (
                   <NavDropdown title="Ciphers" id="basic-nav-dropdown">
                     <Link href="/ciphers/countries">
                       <NavDropdown.Item href="#action/3.1">

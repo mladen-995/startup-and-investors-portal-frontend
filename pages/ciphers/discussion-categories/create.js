@@ -137,5 +137,9 @@ export default function CreateDiscussionCategory() {
 }
 
 CreateDiscussionCategory.getLayout = function getLayout(page) {
-  return <AuthLayout isProtected={true}>{page}</AuthLayout>;
+  return (
+    <AuthLayout isProtected={true} isAdmin={true}>
+      {page}
+    </AuthLayout>
+  );
 };

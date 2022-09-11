@@ -127,6 +127,7 @@ export default function Groups() {
     },
     {
       name: "Actions",
+      minWidth: "300px",
       cell: (row) => (
         <div>
           {renderArchiveButton(row)}

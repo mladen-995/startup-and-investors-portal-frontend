@@ -74,5 +74,9 @@ export default function CreateProfessionalSkills() {
 }
 
 CreateProfessionalSkills.getLayout = function getLayout(page) {
-  return <AuthLayout>{page}</AuthLayout>;
+  return (
+    <AuthLayout isProtected={true} isAdmin={true}>
+      {page}
+    </AuthLayout>
+  );
 };

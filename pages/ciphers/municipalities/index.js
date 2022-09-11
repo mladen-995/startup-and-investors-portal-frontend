@@ -24,5 +24,9 @@ export default function Municipalities() {
 }
 
 Municipalities.getLayout = function getLayout(page) {
-  return <AuthLayout>{page}</AuthLayout>;
+  return (
+    <AuthLayout isProtected={true} isAdmin={true}>
+      {page}
+    </AuthLayout>
+  );
 };

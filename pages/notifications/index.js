@@ -15,6 +15,8 @@ import {
   NotificationManager,
 } from "react-notifications";
 import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
+import RequestDeleteButton from "../../components/request-delete-button.js";
+import NotificationDetailsModal from "../../components/notifications/details-modal";
 
 export default function Notifications() {
   const user = useUser();
@@ -31,22 +33,6 @@ export default function Notifications() {
     loadNotifications();
   }, []);
 
-  function requestDelete(newsId) {
-    axiosInstance.post(`news/delete-request/${newsId}`).then((res) => {
-      axiosInstance.get("news").then((response) => {
-        setNews(response.data.data);
-      });
-    });
-  }
-
-  function archive(newsId) {
-    axiosInstance.post(`news/archive/${newsId}`).then((res) => {
-      axiosInstance.get("news").then((response) => {
-        setNews(response.data.data);
-      });
-    });
-  }
-
   const renderDeclineDeleteRequestButton = (row) => {
     if (row.requestedDeletion && user?.isAdministrator()) {
       return (
@@ -58,7 +44,7 @@ export default function Notifications() {
             NotificationManager.success(
               "Delete request is successfully declined."
             );
-            notifications();
+            loadNotifications();
           }}
         />
       );
@@ -76,7 +62,7 @@ export default function Notifications() {
             NotificationManager.success(
               "Notification is successfully deleted."
             );
-            loadAds();
+            loadNotifications();
           }}
         />
       );
@@ -84,27 +70,39 @@ export default function Notifications() {
   };
 
   function renderRequestDeleteButton(row) {
-    if (!row.requestedDeletion) {
+    if (
+      !row.requestedDeletion &&
+      user?.user?.id === row.createdBy &&
+      !user?.isAdministrator()
+    ) {
       return (
-        <Button
-          variant="danger"
-          size="sm"
-          onClick={() => {
-            requestDelete(row.id);
+        <RequestDeleteButton
+          itemId={row.id}
+          itemTitle={row.title}
+          requestDeleteUrlPath="notifications"
+          onDeleteRequest={() => {
+            NotificationManager.success("Delete request is successfully sent.");
+            loadNotifications();
           }}
-        >
-          Delete
-        </Button>
+        />
       );
     }
   }
 
   function renderArchiveButton(row) {
-    if (!row.isArchived) {
+    if (!row.isArchived && user?.user?.id === row.createdBy) {
       return (
-        <Button variant="warning" size="sm" onClick={() => archive(row.id)}>
-          Archive
-        </Button>
+        <ArchiveButton
+          itemId={row.id}
+          itemTitle={row.title}
+          archiveUrlPath="notifications"
+          onArchive={() => {
+            NotificationManager.success(
+              "Notification is successfully archived."
+            );
+            loadNotifications();
+          }}
+        />
       );
     }
   }
@@ -132,9 +130,12 @@ export default function Notifications() {
     },
     {
       name: "Actions",
+      minWidth: "300px",
       cell: (row) => (
         <div>
+          <NotificationDetailsModal notificationId={row.id} />
           {renderArchiveButton(row)}
+          {renderRequestDeleteButton(row)}
           {renderDeclineDeleteRequestButton(row)}
           {renderDeleteButton(row)}
         </div>

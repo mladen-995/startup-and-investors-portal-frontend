@@ -11,6 +11,9 @@ import {
 } from "react-notifications";
 import DeleteButton from "../../components/delete-button";
 import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
+import ArchiveButton from "../../components/archive-button";
+import RequestDeleteButton from "../../components/request-delete-button.js";
+import AdDetailsModal from "../../components/ads/details-modal";
 
 export default function Ads() {
   const user = useUser();
@@ -78,27 +81,37 @@ export default function Ads() {
   };
 
   function renderRequestDeleteButton(row) {
-    if (!row.requestedDeletion) {
+    if (
+      !row.requestedDeletion &&
+      user?.user?.id === row.createdBy &&
+      !user?.isAdministrator()
+    ) {
       return (
-        <Button
-          variant="danger"
-          size="sm"
-          onClick={() => {
-            requestDelete(row.id);
+        <RequestDeleteButton
+          itemId={row.id}
+          itemTitle={row.title}
+          requestDeleteUrlPath="ads"
+          onDeleteRequest={() => {
+            NotificationManager.success("Delete request is successfully sent.");
+            loadAds();
           }}
-        >
-          Delete
-        </Button>
+        />
       );
     }
   }
 
   function renderArchiveButton(row) {
-    if (!row.isArchived) {
+    if (!row.isArchived && user?.user?.id === row.createdBy) {
       return (
-        <Button variant="warning" size="sm" onClick={() => archive(row.id)}>
-          Archive
-        </Button>
+        <ArchiveButton
+          itemId={row.id}
+          itemTitle={row.title}
+          archiveUrlPath="ads"
+          onArchive={() => {
+            NotificationManager.success("Ad is successfully archived.");
+            loadAds();
+          }}
+        />
       );
     }
   }
@@ -126,9 +139,12 @@ export default function Ads() {
     },
     {
       name: "Actions",
+      minWidth: "300px",
       cell: (row) => (
         <div>
+          <AdDetailsModal adId={row.id} />
           {renderArchiveButton(row)}
+          {renderRequestDeleteButton(row)}
           {renderDeclineDeleteRequestButton(row)}
           {renderDeleteButton(row)}
         </div>

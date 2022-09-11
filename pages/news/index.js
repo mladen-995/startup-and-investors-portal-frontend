@@ -13,6 +13,8 @@ import DeleteButton from "../../components/delete-button";
 import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
 import ArchiveButton from "../../components/archive-button";
 import RequestDeleteButton from "../../components/request-delete-button.js";
+import { formatDateTime } from "../../lib/format-date";
+import NewsDetails from "../../components/news/details-button";
 
 export default function News() {
   const user = useUser();
@@ -124,14 +126,21 @@ export default function News() {
       selector: (row) => row.visibility,
     },
     {
+      name: "Created at",
+      selector: (row) => row.createdAt,
+      cell: (row) => formatDateTime(row.createdAt),
+    },
+    {
       name: "Status",
       selector: (row) => row.requestedDeletion,
       cell: (row) => renderStatus(row),
     },
     {
       name: "Actions",
+      minWidth: "300px",
       cell: (row) => (
         <div>
+          <NewsDetails newsId={row.id} />
           {renderArchiveButton(row)}
           {renderRequestDeleteButton(row)}
           {renderDeclineDeleteRequestButton(row)}

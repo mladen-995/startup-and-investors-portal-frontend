@@ -16,6 +16,7 @@ import { useUser } from "../context/user-hook";
 import ChangePassword from "../components/my-profile/change-password";
 import PublicFields from "../components/my-profile/public-fields";
 import MutedInvestors from "../components/my-profile/muted-investors";
+import ProfileInfo from "../components/my-profile/profile-info";
 
 export default function MyProfile() {
   const user = useUser();
@@ -30,12 +31,12 @@ export default function MyProfile() {
       <hr />
 
       <Tabs
-        defaultActiveKey="profile"
+        defaultActiveKey="home"
         id="uncontrolled-tab-example"
         className="mb-3"
       >
         <Tab eventKey="home" title="Home">
-          11
+          <ProfileInfo />
         </Tab>
         <Tab eventKey="profile" title="Change password">
           <ChangePassword />
