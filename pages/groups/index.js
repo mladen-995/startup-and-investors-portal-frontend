@@ -14,22 +14,31 @@ import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
+import JoinGroup from "../../components/groups/join-group";
 
 export default function Groups() {
   const user = useUser();
   const [groups, setGroups] = useState([]);
 
   const loadGroups = async () => {
+    if (!user) {
+      return;
+    }
+
+    const fetchUrl = user.isStartup()
+      ? "startup-groups-for-user"
+      : "startup-groups";
+
     const {
       data: { data },
-    } = await axiosInstance.get("startup-groups");
+    } = await axiosInstance.get(fetchUrl);
 
     setGroups(data);
   };
 
   useEffect(() => {
     loadGroups();
-  }, []);
+  }, [user]);
 
   function requestDelete(newsId) {
     axiosInstance.post(`news/delete-request/${newsId}`).then((res) => {
@@ -46,6 +55,12 @@ export default function Groups() {
       });
     });
   }
+
+  const leaveGroup = async (groupId) => {
+    await axiosInstance.post(`startup-groups/leave/${groupId}`);
+    NotificationManager.success("You successfully left the group.");
+    loadGroups();
+  };
 
   const renderDeleteButton = (row) => {
     if (user?.isAdministrator()) {
@@ -78,6 +93,21 @@ export default function Groups() {
     }
   }
 
+  const renderLeaveGroupButton = (row) => {
+    if (user && user.isStartup()) {
+      return (
+        <Button
+          variant="danger"
+          className="me-2"
+          size="sm"
+          onClick={() => leaveGroup(row.id)}
+        >
+          Leave
+        </Button>
+      );
+    }
+  };
+
   const columns = [
     {
       name: "Name",
@@ -101,6 +131,7 @@ export default function Groups() {
         <div>
           {renderArchiveButton(row)}
           {renderDeleteButton(row)}
+          {renderLeaveGroupButton(row)}
         </div>
       ),
     },
@@ -110,11 +141,23 @@ export default function Groups() {
     <div>
       <h1>Groups</h1>
       <hr />
-      <Link href="/groups/create">
-        <Button variant="primary" type="submit">
-          Create group
-        </Button>
-      </Link>
+      {user && !user.isStartup() && (
+        <Link href="/groups/create">
+          <Button variant="primary" type="submit">
+            Create group
+          </Button>
+        </Link>
+      )}
+
+      {user && user.isStartup() && (
+        <JoinGroup
+          onJoin={() => {
+            NotificationManager.success("You successfully joined a group.");
+            loadGroups();
+          }}
+        />
+      )}
+
       <DataTable columns={columns} data={groups} />
       <NotificationContainer />
     </div>

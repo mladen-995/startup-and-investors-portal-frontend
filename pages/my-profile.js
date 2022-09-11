@@ -4,31 +4,55 @@ import { useEffect, useState } from "react";
 import Router from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
 import { sessionOptions } from "../lib/session";
+import { Field, Form, Formik } from "formik";
+import { Col, FormGroup, FormLabel, Row, Tab, Tabs } from "react-bootstrap";
+import CustomInput from "../components/inputs/custom-input";
+import StreetNumberSelect from "../components/inputs/street-numbers-select";
+import StreetSelect from "../components/inputs/streets-select";
+import MunicipalitySelect from "../components/inputs/municipalities-select";
+import CitySelect from "../components/inputs/cities-select";
+import CountrySelect from "../components/inputs/countries-select";
+import { useUser } from "../context/user-hook";
+import ChangePassword from "../components/my-profile/change-password";
+import PublicFields from "../components/my-profile/public-fields";
+import MutedInvestors from "../components/my-profile/muted-investors";
 
-export const getServerSideProps = withIronSessionSsr(async function ({
-  req,
-  res,
-}) {
-  const user = req.session.user;
+export default function MyProfile() {
+  const user = useUser();
 
   if (!user) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
+    return;
   }
 
-  return {
-    props: { user },
-  };
-},
-sessionOptions);
+  return (
+    <>
+      <h1>My profile</h1>
+      <hr />
 
-export default function MyProfile({ user }) {
-  console.log(user);
-  return <h1>{user.firstName}</h1>;
+      <Tabs
+        defaultActiveKey="profile"
+        id="uncontrolled-tab-example"
+        className="mb-3"
+      >
+        <Tab eventKey="home" title="Home">
+          11
+        </Tab>
+        <Tab eventKey="profile" title="Change password">
+          <ChangePassword />
+        </Tab>
+        {user && user.isStartup() && (
+          <Tab eventKey="publicFields" title="Public fields">
+            <PublicFields />
+          </Tab>
+        )}
+        {user && !user.isAdministrator() && (
+          <Tab eventKey="mutedInvestors" title="Muted investors">
+            <MutedInvestors />
+          </Tab>
+        )}
+      </Tabs>
+    </>
+  );
 }
 
 MyProfile.getLayout = function getLayout(page) {

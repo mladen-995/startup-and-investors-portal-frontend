@@ -81,11 +81,11 @@ export default function PublicFields() {
 
   useEffect(() => {
     const loadFields = async () => {
-      const response = await axiosInstance.get(
-        `startup-public-fields/${user.user.id}`
-      );
+      const {
+        data: { data },
+      } = await axiosInstance.get(`startup-public-fields/${user.user.id}`);
 
-      updateInitialValues(response.data.data);
+      updateInitialValues(data);
     };
 
     if (user) {
@@ -113,7 +113,7 @@ export default function PublicFields() {
                 key={fieldItem.key}
                 type="checkbox"
               >
-                {({ field, meta, form: { setFieldValue } }) => (
+                {({ field, form: { setFieldValue } }) => (
                   <FormCheck
                     inline
                     className="mb-3"

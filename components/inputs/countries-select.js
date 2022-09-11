@@ -24,6 +24,7 @@ export default function CountrySelect(props) {
       name={props.name}
       options={countries}
       onChange={props.onChange}
+      value="12ca066d-0f53-42ba-a1e6-5b5846d6a569"
     ></Select>
   );
 }
