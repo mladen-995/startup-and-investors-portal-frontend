@@ -1,10 +1,6 @@
-import { getUser } from "../../services/user.service";
 import { useEffect, useState } from "react";
-import Router from "next/router";
-import { withIronSessionSsr } from "iron-session/next";
 import DataTable from "react-data-table-component";
 import AuthLayout from "../../components/layout-auth";
-import { sessionOptions } from "../../lib/session";
 import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
@@ -93,7 +89,7 @@ export default function Discussions() {
   };
 
   const renderRequestDeleteButton = (row) => {
-    if (!row.requestedDeletion && user.user.id === row.createdBy) {
+    if (!row.requestedDeletion && user?.user?.id === row.createdBy) {
       return (
         <Button
           variant="danger"
@@ -110,7 +106,7 @@ export default function Discussions() {
   };
 
   const renderArchiveButton = (row) => {
-    if (!row.isArchived && user.user.id === row.createdBy) {
+    if (!row.isArchived && user?.user?.id === row.createdBy) {
       return (
         <Button
           variant="warning"
@@ -158,11 +154,14 @@ export default function Discussions() {
       <h1>Discussions</h1>
       <hr />
 
-      <Link href="/discussions/create">
-        <Button variant="primary" type="submit">
-          Create discussion
-        </Button>
-      </Link>
+      {user && user.isLoggedIn && (
+        <Link href="/discussions/create">
+          <Button variant="primary" type="submit">
+            Create discussion
+          </Button>
+        </Link>
+      )}
+
       <DataTable columns={columns} data={discussions} />
       <NotificationContainer />
     </div>

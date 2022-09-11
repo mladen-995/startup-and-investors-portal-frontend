@@ -1,11 +1,7 @@
-import { getUser } from "../../services/user.service";
 import React, { useEffect, useState } from "react";
-import Router from "next/router";
-import { withIronSessionSsr } from "iron-session/next";
 import DataTable from "react-data-table-component";
 import AuthLayout from "../../components/layout-auth";
-import { sessionOptions } from "../../lib/session";
-import { Badge, Button, Dropdown } from "react-bootstrap";
+import { Badge, Button } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
 import { useUser } from "../../context/user-hook";
@@ -13,16 +9,14 @@ import {
   NotificationContainer,
   NotificationManager,
 } from "react-notifications";
-import SweetAlert from "react-bootstrap-sweetalert";
-import ResolveDeleteRequest from "../../components/resolve-delete-request";
 import DeleteButton from "../../components/delete-button";
 import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
+import ArchiveButton from "../../components/archive-button";
+import RequestDeleteButton from "../../components/request-delete-button.js";
 
 export default function News() {
   const user = useUser();
   const [news, setNews] = useState([]);
-  const [resolveDeleteRequestPromptShow, setResolveDeleteRequestPromptShow] =
-    useState(false);
 
   const loadNews = async () => {
     const {
@@ -38,22 +32,6 @@ export default function News() {
 
     loadNews();
   }, [user]);
-
-  const requestDelete = async (newsId) => {
-    await axiosInstance.post(`news/delete-request/${newsId}`);
-    NotificationManager.success("Delete request is successfully sent.");
-    loadNews();
-  };
-
-  const archive = async (newsId) => {
-    await axiosInstance.post(`news/archive/${newsId}`);
-    NotificationManager.success("News is successfully archived.");
-    loadNews();
-  };
-
-  const onDeleteRequestResolve = () => {
-    loadNews();
-  };
 
   const renderStatus = (row) => {
     if (row.requestedDeletion) {
@@ -102,34 +80,35 @@ export default function News() {
   const renderRequestDeleteButton = (row) => {
     if (
       !row.requestedDeletion &&
-      user.user.id === row.createdBy &&
-      !user.isAdministrator()
+      user?.user?.id === row.createdBy &&
+      !user?.isAdministrator()
     ) {
       return (
-        <Button
-          variant="danger"
-          size="sm"
-          onClick={() => {
-            requestDelete(row.id);
+        <RequestDeleteButton
+          itemId={row.id}
+          itemTitle={row.title}
+          requestDeleteUrlPath="news"
+          onDeleteRequest={() => {
+            NotificationManager.success("Delete request is successfully sent.");
+            loadNews();
           }}
-        >
-          Request delete
-        </Button>
+        />
       );
     }
   };
 
   const renderArchiveButton = (row) => {
-    if (!row.isArchived && user.user.id === row.createdBy) {
+    if (!row.isArchived && user?.user?.id === row.createdBy) {
       return (
-        <Button
-          variant="warning"
-          size="sm"
-          className="me-2"
-          onClick={() => archive(row.id)}
-        >
-          Archive
-        </Button>
+        <ArchiveButton
+          itemId={row.id}
+          itemTitle={row.title}
+          archiveUrlPath="news"
+          onArchive={() => {
+            NotificationManager.success("News is successfully archived.");
+            loadNews();
+          }}
+        />
       );
     }
   };
@@ -167,11 +146,14 @@ export default function News() {
       <h1>News</h1>
       <hr />
 
-      <Link href="/news/create">
-        <Button variant="primary" type="submit">
-          Create news
-        </Button>
-      </Link>
+      {user && user.isLoggedIn && (
+        <Link href="/news/create">
+          <Button variant="primary" type="submit">
+            Create news
+          </Button>
+        </Link>
+      )}
+
       <DataTable columns={columns} data={news} />
       <NotificationContainer />
     </div>

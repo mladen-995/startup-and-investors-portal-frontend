@@ -1,10 +1,6 @@
-import { getUser } from "../../services/user.service";
 import { useEffect, useState } from "react";
-import Router from "next/router";
-import { withIronSessionSsr } from "iron-session/next";
 import DataTable from "react-data-table-component";
 import AuthLayout from "../../components/layout-auth";
-import { sessionOptions } from "../../lib/session";
 import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
@@ -144,11 +140,15 @@ export default function Ads() {
     <div>
       <h1>Ads</h1>
       <hr />
-      <Link href="/ads/create">
-        <Button variant="primary" type="submit">
-          Create ads
-        </Button>
-      </Link>
+
+      {user && user.isLoggedIn && (
+        <Link href="/ads/create">
+          <Button variant="primary" type="submit">
+            Create ads
+          </Button>
+        </Link>
+      )}
+
       <DataTable columns={columns} data={ads} />
       <NotificationContainer />
     </div>

@@ -135,5 +135,5 @@ export default function NewsCreate({ user, token }) {
 }
 
 NewsCreate.getLayout = function getLayout(page) {
-  return <AuthLayout>{page}</AuthLayout>;
+  return <AuthLayout isProtected={true}>{page}</AuthLayout>;
 };

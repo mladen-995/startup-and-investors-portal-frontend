@@ -121,5 +121,5 @@ export default function DiscussionCreate({ user, token }) {
 }
 
 DiscussionCreate.getLayout = function getLayout(page) {
-  return <AuthLayout>{page}</AuthLayout>;
+  return <AuthLayout isProtected={true}>{page}</AuthLayout>;
 };

@@ -17,7 +17,9 @@ export const useUser = () => {
       );
       setUser(userEntity);
 
-      setToken(response.data.token);
+      if (response.data.token) {
+        setToken(response.data.token);
+      }
     };
 
     getUser();

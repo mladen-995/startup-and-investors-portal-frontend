@@ -146,11 +146,15 @@ export default function Notifications() {
     <div>
       <h1>Notifications</h1>
       <hr />
-      <Link href="/notifications/create">
-        <Button variant="primary" type="submit">
-          Create notification
-        </Button>
-      </Link>
+
+      {user && user.isLoggedIn && (
+        <Link href="/notifications/create">
+          <Button variant="primary" type="submit">
+            Create notification
+          </Button>
+        </Link>
+      )}
+
       <DataTable columns={columns} data={notifications} />
       <NotificationContainer />
     </div>
