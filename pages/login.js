@@ -10,6 +10,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomInput from "../components/inputs/custom-input";
 import { useUser } from "../context/user-hook";
+import { Col, Row } from "react-bootstrap";
 
 export default function Login() {
   const user = useUser();
@@ -82,8 +83,14 @@ export default function Login() {
                   >
                     Login
                   </Button>
-                  You don't have an account?{" "}
-                  <Link href="/register">Click here</Link> to register.
+                  <Link href="/forgot-password">Forgot password?</Link>
+                  <Row className="mt-3">
+                    <Col>
+                      You don't have an account?{" "}
+                      <Link href="/register">Click here</Link> to register.
+                    </Col>
+                  </Row>
+                  <br />
                 </Form>
               )}
             </Formik>
