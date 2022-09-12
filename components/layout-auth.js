@@ -4,12 +4,9 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Router, { useRouter } from "next/router";
-import { logoutUser } from "./../services/user.service";
-import axios from "axios";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useUser } from "../context/user-hook";
-import { setToken } from "../lib/axios";
 
 export default function AuthLayout({
   children,
@@ -38,7 +35,7 @@ export default function AuthLayout({
     } else if (user && !userCanViewPage()) {
       router.push("/");
     }
-  }, [user]);
+  }, [user, isProtected, isAdmin]);
 
   function logout(e) {
     e.preventDefault();
@@ -88,58 +85,63 @@ export default function AuthLayout({
                   <Nav.Link href="#home">Notifications</Nav.Link>
                 </Link>
                 {user && user.isLoggedIn && user.isAdministrator() && (
-                  <NavDropdown title="Ciphers" id="basic-nav-dropdown">
-                    <Link href="/ciphers/countries">
-                      <NavDropdown.Item href="#action/3.1">
-                        Countries
-                      </NavDropdown.Item>
+                  <>
+                    <Link href="/statistics">
+                      <Nav.Link href="#home">Statistics</Nav.Link>
                     </Link>
-                    <Link href="/ciphers/cities">
-                      <NavDropdown.Item href="#action/3.2">
-                        Cities
-                      </NavDropdown.Item>
-                    </Link>
-                    <Link href="/ciphers/municipalities">
-                      <NavDropdown.Item href="#action/3.2">
-                        Municipalities
-                      </NavDropdown.Item>
-                    </Link>
-                    <Link href="/ciphers/streets">
-                      <NavDropdown.Item href="#action/3.2">
-                        Streets
-                      </NavDropdown.Item>
-                    </Link>
-                    <Link href="/ciphers/street-numbers">
-                      <NavDropdown.Item href="#action/3.2">
-                        Street numbers
-                      </NavDropdown.Item>
-                    </Link>
-                    <Link href="/ciphers/business-types">
-                      <NavDropdown.Item href="#action/3.2">
-                        Business types
-                      </NavDropdown.Item>
-                    </Link>
-                    <Link href="/ciphers/areas-of-interest">
-                      <NavDropdown.Item href="#action/3.2">
-                        Areas of interest
-                      </NavDropdown.Item>
-                    </Link>
-                    <Link href="/ciphers/professional-skills">
-                      <NavDropdown.Item href="#action/3.2">
-                        Professional skills
-                      </NavDropdown.Item>
-                    </Link>
-                    <Link href="/ciphers/news-categories">
-                      <NavDropdown.Item href="#action/3.2">
-                        News categories
-                      </NavDropdown.Item>
-                    </Link>
-                    <Link href="/ciphers/discussion-categories">
-                      <NavDropdown.Item href="#action/3.2">
-                        Discussion categories
-                      </NavDropdown.Item>
-                    </Link>
-                  </NavDropdown>
+                    <NavDropdown title="Ciphers" id="basic-nav-dropdown">
+                      <Link href="/ciphers/countries">
+                        <NavDropdown.Item href="#action/3.1">
+                          Countries
+                        </NavDropdown.Item>
+                      </Link>
+                      <Link href="/ciphers/cities">
+                        <NavDropdown.Item href="#action/3.2">
+                          Cities
+                        </NavDropdown.Item>
+                      </Link>
+                      <Link href="/ciphers/municipalities">
+                        <NavDropdown.Item href="#action/3.2">
+                          Municipalities
+                        </NavDropdown.Item>
+                      </Link>
+                      <Link href="/ciphers/streets">
+                        <NavDropdown.Item href="#action/3.2">
+                          Streets
+                        </NavDropdown.Item>
+                      </Link>
+                      <Link href="/ciphers/street-numbers">
+                        <NavDropdown.Item href="#action/3.2">
+                          Street numbers
+                        </NavDropdown.Item>
+                      </Link>
+                      <Link href="/ciphers/business-types">
+                        <NavDropdown.Item href="#action/3.2">
+                          Business types
+                        </NavDropdown.Item>
+                      </Link>
+                      <Link href="/ciphers/areas-of-interest">
+                        <NavDropdown.Item href="#action/3.2">
+                          Areas of interest
+                        </NavDropdown.Item>
+                      </Link>
+                      <Link href="/ciphers/professional-skills">
+                        <NavDropdown.Item href="#action/3.2">
+                          Professional skills
+                        </NavDropdown.Item>
+                      </Link>
+                      <Link href="/ciphers/news-categories">
+                        <NavDropdown.Item href="#action/3.2">
+                          News categories
+                        </NavDropdown.Item>
+                      </Link>
+                      <Link href="/ciphers/discussion-categories">
+                        <NavDropdown.Item href="#action/3.2">
+                          Discussion categories
+                        </NavDropdown.Item>
+                      </Link>
+                    </NavDropdown>
+                  </>
                 )}
               </Nav>
             </Navbar.Collapse>
