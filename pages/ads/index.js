@@ -14,6 +14,7 @@ import DeclineDeleteRequestButton from "../../components/decline-delete-request-
 import ArchiveButton from "../../components/archive-button";
 import RequestDeleteButton from "../../components/request-delete-button.js";
 import AdDetailsModal from "../../components/ads/details-modal";
+import { formatDateTime } from "../../lib/format-date";
 
 export default function Ads() {
   const user = useUser();
@@ -90,7 +91,7 @@ export default function Ads() {
         <RequestDeleteButton
           itemId={row.id}
           itemTitle={row.title}
-          requestDeleteUrlPath="ads"
+          requestDeleteUrlPath="ads/delete-request"
           onDeleteRequest={() => {
             NotificationManager.success("Delete request is successfully sent.");
             loadAds();
@@ -106,7 +107,7 @@ export default function Ads() {
         <ArchiveButton
           itemId={row.id}
           itemTitle={row.title}
-          archiveUrlPath="ads"
+          archiveUrlPath="ads/archive"
           onArchive={() => {
             NotificationManager.success("Ad is successfully archived.");
             loadAds();
@@ -136,6 +137,11 @@ export default function Ads() {
           return <Badge bg="success">Active</Badge>;
         }
       },
+    },
+    {
+      name: "Created at",
+      selector: (row) => row.createdAt,
+      cell: (row) => formatDateTime(row.createdAt),
     },
     {
       name: "Actions",

@@ -4,9 +4,10 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Router, { useRouter } from "next/router";
+import axios from "axios";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { useUser } from "../context/user-hook";
+import { useUser } from "../hooks/user-hook";
 
 export default function AuthLayout({
   children,
@@ -89,6 +90,9 @@ export default function AuthLayout({
                     <Link href="/statistics">
                       <Nav.Link href="#home">Statistics</Nav.Link>
                     </Link>
+                    <Link href="/user-creation-requests">
+                      <Nav.Link href="#home">User requests</Nav.Link>
+                    </Link>
                     <NavDropdown title="Ciphers" id="basic-nav-dropdown">
                       <Link href="/ciphers/countries">
                         <NavDropdown.Item href="#action/3.1">
@@ -155,16 +159,11 @@ export default function AuthLayout({
             {user && user.isLoggedIn && (
               <Navbar.Collapse className="navbar-nav justify-content-end">
                 <NavDropdown title={user?.fullName()} id="basic-nav-dropdown">
-                  <NavDropdown.Item href="#action/3.1">
-                    Profile
-                  </NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.3">
-                    Something
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
+                  <Link href="/my-profile">
+                    <NavDropdown.Item href="#action/3.1">
+                      Profile
+                    </NavDropdown.Item>
+                  </Link>
                   <NavDropdown.Item href="#action/3.4" onClick={logout}>
                     Logout
                   </NavDropdown.Item>

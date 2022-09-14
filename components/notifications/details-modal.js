@@ -46,11 +46,6 @@ export default function NotificationDetailsModal({ notificationId }) {
             {notification?.text}
           </p>
           <p>
-            <small class="text-secondary">Category</small>
-            <br />
-            {notification?.category}
-          </p>
-          <p>
             <small class="text-secondary">Created at</small>
             <br />
             {notification?.createdAt

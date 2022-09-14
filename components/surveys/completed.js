@@ -20,6 +20,7 @@ import { axiosInstance } from "../../lib/axios";
 import { Field, FieldArray, Form, Formik } from "formik";
 import axios from "axios";
 import { useUser } from "../../context/user-hook";
+import { formatDateTime } from "../../lib/format-date";
 
 export default function CompletedSurveys() {
   const user = useUser();
@@ -72,6 +73,11 @@ export default function CompletedSurveys() {
       },
     },
     {
+      name: "Created at",
+      selector: (row) => row.createdAt,
+      cell: (row) => formatDateTime(row.createdAt),
+    },
+    {
       name: "Actions",
       button: true,
       cell: (row) => (
@@ -79,7 +85,7 @@ export default function CompletedSurveys() {
           {(row.public ||
             (user?.isInvestor() && row.createdBy == user?.user?.id)) && (
             <Button variant="info" size="sm" onClick={() => handleShow(row)}>
-              Stats
+              Results
             </Button>
           )}
         </>
@@ -96,7 +102,7 @@ export default function CompletedSurveys() {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Survey statistics</Modal.Title>
+          <Modal.Title>Survey results</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h5>Questions</h5>

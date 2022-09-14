@@ -45,76 +45,83 @@ export default function AdsCreate() {
   }
 
   return (
-    <Formik
-      initialValues={{
-        title: "",
-        text: "",
-        expiryDate: null,
-        visibility: false,
-      }}
-      validationSchema={AdCreateSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ errors, touched, setFieldValue }) => (
-        <Form>
-          <CustomInput
-            name="title"
-            label="Title"
-            errors={errors}
-            touched={touched}
-            required={true}
-          />
+    <>
+      <h1>Create ad</h1>
+      <hr />
 
-          <FormGroup className="mb-3">
-            <FormLabel>
-              Text <span className="text-danger">*</span>
-            </FormLabel>
-            <Field
-              id="text"
-              name="text"
-              as="textarea"
-              className="form-control"
+      <Formik
+        initialValues={{
+          title: "",
+          text: "",
+          expiryDate: null,
+          visibility: false,
+        }}
+        validationSchema={AdCreateSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ errors, touched, setFieldValue }) => (
+          <Form>
+            <CustomInput
+              name="title"
+              label="Title"
+              errors={errors}
+              touched={touched}
+              required={true}
             />
-            {errors.text && touched.text ? (
-              <div className="text-danger">{errors.text}</div>
-            ) : null}
-          </FormGroup>
 
-          <Field name="expiryDate">
-            {({ field, meta, form: { setFieldValue } }) => (
-              <FormGroup className="mb-3">
-                <FormLabel>
-                  Expiry date <span className="text-danger">*</span>
-                </FormLabel>
-                <DatePicker
-                  className="form-control"
-                  isClearable
-                  value={field.value}
-                  onChange={(val) => {
-                    setFieldValue(field.name, val);
-                  }}
-                  selected={(field.value && new Date(field.value)) || null}
-                  dateFormat="dd/MM/yyyy"
-                />
-              </FormGroup>
-            )}
-          </Field>
+            <FormGroup className="mb-3">
+              <FormLabel>
+                Text <span className="text-danger">*</span>
+              </FormLabel>
+              <Field
+                id="text"
+                name="text"
+                as="textarea"
+                className="form-control"
+              />
+              {errors.text && touched.text ? (
+                <div className="text-danger">{errors.text}</div>
+              ) : null}
+            </FormGroup>
 
-          <AdsVisibility
-            name="visibility"
-            label="Title"
-            errors={errors}
-            touched={touched}
-            setFieldValue={setFieldValue}
-            childrenName="visibilityPairObject"
-          />
+            <Field name="expiryDate">
+              {({ field, meta, form: { setFieldValue } }) => (
+                <FormGroup className="mb-3">
+                  <FormLabel>
+                    Expiry date <span className="text-danger">*</span>
+                  </FormLabel>
+                  <DatePicker
+                    className="form-control"
+                    isClearable
+                    value={field.value}
+                    onChange={(val) => {
+                      setFieldValue(field.name, val);
+                    }}
+                    selected={(field.value && new Date(field.value)) || null}
+                    dateFormat="dd/MM/yyyy"
+                  />
+                </FormGroup>
+              )}
+            </Field>
 
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
-      )}
-    </Formik>
+            <h3>Visibility</h3>
+
+            <AdsVisibility
+              name="visibility"
+              label="Title"
+              errors={errors}
+              touched={touched}
+              setFieldValue={setFieldValue}
+              childrenName="visibilityPairObject"
+            />
+
+            <Button variant="primary" type="submit">
+              Submit
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </>
   );
 }
 

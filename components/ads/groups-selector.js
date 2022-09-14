@@ -10,7 +10,7 @@ export default function GroupSelector(props) {
     const loadGroups = async () => {
       const {
         data: { data },
-      } = await axiosInstance.get(startup - groups);
+      } = await axiosInstance.get(`startup-groups`);
 
       setGroups(
         data.map((item) => {

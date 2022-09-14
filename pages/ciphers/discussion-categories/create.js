@@ -8,7 +8,7 @@ import { axiosInstance } from "../../../lib/axios";
 import SweetAlert from "react-bootstrap-sweetalert";
 import Router from "next/router";
 import DatePicker from "react-datepicker";
-import { Category } from "../../../enums/category";
+import { CategoryType } from "../../../enums/category";
 
 export default function CreateDiscussionCategory() {
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function CreateDiscussionCategory() {
     setLoading(true);
     await axiosInstance.post("categories", {
       ...values,
-      entityName: Category.DISCUSSION,
+      entityName: CategoryType.DISCUSSION,
     });
     setLoading(false);
     setNotificationAlertShow(true);

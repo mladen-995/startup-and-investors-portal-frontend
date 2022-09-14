@@ -105,7 +105,6 @@ export default function PublicFields() {
       >
         <Form>
           <>
-            <pre>{JSON.stringify(initialValues)}</pre>
             {getKeyValuePairsOfFields().map((fieldItem) => (
               <Field
                 id={fieldItem.key}

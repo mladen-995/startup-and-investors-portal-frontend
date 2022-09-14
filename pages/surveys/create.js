@@ -86,6 +86,7 @@ export default function SurveysCreate() {
                       type="button"
                       className="ms-3"
                       onClick={() => push("")}
+                      size="sm"
                     >
                       Add question
                     </Button>

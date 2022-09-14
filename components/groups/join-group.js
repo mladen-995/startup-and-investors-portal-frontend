@@ -57,7 +57,7 @@ export default function JoinGroup({ onJoin }) {
           {({ errors, touched }) => (
             <Form>
               <Modal.Header closeButton>
-                <Modal.Title>Modal heading</Modal.Title>
+                <Modal.Title>Join group</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <Field id="groupId" name="groupId">

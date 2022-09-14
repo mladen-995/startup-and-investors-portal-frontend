@@ -8,7 +8,7 @@ import { sessionOptions } from "../../lib/session";
 import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
-import { useUser } from "../../context/user-hook";
+import { useUser } from "../../hooks/user-hook";
 import DeleteButton from "../../components/delete-button";
 import {
   NotificationContainer,
@@ -17,6 +17,8 @@ import {
 import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
 import RequestDeleteButton from "../../components/request-delete-button.js";
 import NotificationDetailsModal from "../../components/notifications/details-modal";
+import ArchiveButton from "../../components/archive-button";
+import { formatDateTime } from "../../lib/format-date";
 
 export default function Notifications() {
   const user = useUser();
@@ -79,7 +81,7 @@ export default function Notifications() {
         <RequestDeleteButton
           itemId={row.id}
           itemTitle={row.title}
-          requestDeleteUrlPath="notifications"
+          requestDeleteUrlPath="notifications/delete-request"
           onDeleteRequest={() => {
             NotificationManager.success("Delete request is successfully sent.");
             loadNotifications();
@@ -95,7 +97,7 @@ export default function Notifications() {
         <ArchiveButton
           itemId={row.id}
           itemTitle={row.title}
-          archiveUrlPath="notifications"
+          archiveUrlPath="notifications/archive"
           onArchive={() => {
             NotificationManager.success(
               "Notification is successfully archived."
@@ -129,6 +131,11 @@ export default function Notifications() {
       },
     },
     {
+      name: "Created at",
+      selector: (row) => row.createdAt,
+      cell: (row) => formatDateTime(row.createdAt),
+    },
+    {
       name: "Actions",
       minWidth: "300px",
       cell: (row) => (
@@ -148,13 +155,15 @@ export default function Notifications() {
       <h1>Notifications</h1>
       <hr />
 
-      {user && user.isLoggedIn && (
-        <Link href="/notifications/create">
-          <Button variant="primary" type="submit">
-            Create notification
-          </Button>
-        </Link>
-      )}
+      {user &&
+        user.isLoggedIn &&
+        (user.isAdministrator() || user.isInvestor()) && (
+          <Link href="/notifications/create">
+            <Button variant="primary" type="submit">
+              Create notification
+            </Button>
+          </Link>
+        )}
 
       <DataTable columns={columns} data={notifications} />
       <NotificationContainer />

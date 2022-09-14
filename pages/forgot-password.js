@@ -49,7 +49,9 @@ export default function ForgotPassword() {
         <Container className="d-flex justify-content-center">
           <Card className="mt-5" style={{ minWidth: "500px", width: "50%" }}>
             <Card.Body>
-              <h1>Forgot password</h1>
+              <h1 className="text-center">Portal</h1>
+              <hr />
+              <h3 className="text-center">Forgot password</h3>
 
               {linkSent && (
                 <>

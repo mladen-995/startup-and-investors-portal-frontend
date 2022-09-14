@@ -46,11 +46,6 @@ export default function AdDetailsModal({ adId }) {
             {ad?.text}
           </p>
           <p>
-            <small class="text-secondary">Category</small>
-            <br />
-            {ad?.category}
-          </p>
-          <p>
             <small class="text-secondary">Created at</small>
             <br />
             {ad?.createdAt ? formatDateTime(ad.createdAt) : ""}

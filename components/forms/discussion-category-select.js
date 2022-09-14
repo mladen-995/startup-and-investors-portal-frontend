@@ -2,8 +2,8 @@ import { Field } from "formik";
 import { useEffect, useState } from "react";
 import { FormGroup, FormLabel } from "react-bootstrap";
 import Select from "react-select";
+import { CategoryType } from "../../enums/category";
 import { axiosInstance } from "../../lib/axios";
-import Category from "./../../enums/category";
 
 export default function DiscussionCategorySelect(props) {
   const [categories, setCategories] = useState([]);
@@ -13,7 +13,7 @@ export default function DiscussionCategorySelect(props) {
       const {
         data: { data },
       } = await axiosInstance.get(
-        `categories?entityName=${Category.DISCUSSION}&activeOnly=true`
+        `categories?entityName=${CategoryType.DISCUSSION}&activeOnly=true`
       );
 
       setCategories(

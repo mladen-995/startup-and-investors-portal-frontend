@@ -19,7 +19,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user?.isLoggedIn) {
-      Router.push("my-profile");
+      Router.push("/");
     }
   }, [user]);
 
@@ -29,7 +29,7 @@ export default function Login() {
 
     try {
       await axios.post("http://localhost:3000/api/login", values);
-      Router.push("/my-profile");
+      Router.push("/");
     } catch (error) {
       if (error.response.status == 422) {
         setErrorMessage("Username or Password not valid!");
@@ -43,7 +43,9 @@ export default function Login() {
       <Container className="d-flex justify-content-center">
         <Card className="mt-5" style={{ minWidth: "500px", width: "50%" }}>
           <Card.Body>
-            <h1>Login</h1>
+            <h1 className="text-center">Portal</h1>
+            <hr />
+            <h3 className="text-center">Login</h3>
             <Formik
               initialValues={{
                 username: "",

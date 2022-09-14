@@ -89,7 +89,7 @@ export default function News() {
         <RequestDeleteButton
           itemId={row.id}
           itemTitle={row.title}
-          requestDeleteUrlPath="news"
+          requestDeleteUrlPath="news/delete-request"
           onDeleteRequest={() => {
             NotificationManager.success("Delete request is successfully sent.");
             loadNews();
@@ -105,7 +105,7 @@ export default function News() {
         <ArchiveButton
           itemId={row.id}
           itemTitle={row.title}
-          archiveUrlPath="news"
+          archiveUrlPath="news/archive"
           onArchive={() => {
             NotificationManager.success("News is successfully archived.");
             loadNews();

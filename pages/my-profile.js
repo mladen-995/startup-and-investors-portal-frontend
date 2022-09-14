@@ -35,7 +35,7 @@ export default function MyProfile() {
         id="uncontrolled-tab-example"
         className="mb-3"
       >
-        <Tab eventKey="home" title="Home">
+        <Tab eventKey="home" title="Profile info">
           <ProfileInfo />
         </Tab>
         <Tab eventKey="profile" title="Change password">

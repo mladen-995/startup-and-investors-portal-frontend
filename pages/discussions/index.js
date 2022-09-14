@@ -14,6 +14,7 @@ import DeleteButton from "../../components/delete-button";
 import DeclineDeleteRequestButton from "../../components/decline-delete-request-button";
 import ArchiveButton from "../../components/archive-button";
 import RequestDeleteButton from "../../components/request-delete-button.js";
+import { formatDateTime } from "../../lib/format-date";
 
 export default function Discussions() {
   const user = useUser();
@@ -94,7 +95,7 @@ export default function Discussions() {
         <RequestDeleteButton
           itemId={row.id}
           itemTitle={row.title}
-          requestDeleteUrlPath="discussions"
+          requestDeleteUrlPath="discussions/delete-request"
           onDeleteRequest={() => {
             NotificationManager.success("Delete request is successfully sent.");
             loadDiscussions();
@@ -110,7 +111,7 @@ export default function Discussions() {
         <ArchiveButton
           itemId={row.id}
           itemTitle={row.title}
-          archiveUrlPath="discussions"
+          archiveUrlPath="discussions/archive"
           onArchive={() => {
             NotificationManager.success("Discussion is successfully archived.");
             loadDiscussions();
@@ -134,6 +135,11 @@ export default function Discussions() {
       name: "Status",
       selector: (row) => row.requestedDeletion,
       cell: (row) => renderStatus(row),
+    },
+    {
+      name: "Created at",
+      selector: (row) => row.createdAt,
+      cell: (row) => formatDateTime(row.createdAt),
     },
     {
       name: "Actions",

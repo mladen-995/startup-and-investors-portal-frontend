@@ -20,6 +20,7 @@ import * as Yup from "yup";
 import SweetAlert from "react-bootstrap-sweetalert";
 
 export default function NotCompletedSurveys() {
+  const [notificationAlertShow, setNotificationAlertShow] = useState(false);
   const [surveys, setSurveys] = useState([]);
   const [show, setShow] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -136,10 +137,9 @@ export default function NotCompletedSurveys() {
           {({ errors, touched }) => (
             <Form>
               <Modal.Header closeButton>
-                <Modal.Title>Modal heading</Modal.Title>
+                <Modal.Title>Fill in survey</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <pre>{JSON.stringify(errors)}</pre>
                 <FieldArray name="answers">
                   <>
                     {questions.map((question, index) => (
@@ -177,7 +177,7 @@ export default function NotCompletedSurveys() {
                   Close
                 </Button>
                 <Button variant="primary" type="submit">
-                  Save Changes
+                  Save
                 </Button>
               </Modal.Footer>
             </Form>

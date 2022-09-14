@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "react-bootstrap";
 import CipherTable from "../../../components/ciphers/table";
 import AuthLayout from "../../../components/layout-auth";
-import { Category } from "../../../enums/category";
+import { CategoryType } from "../../../enums/category";
 
 export default function DiscussionCategories() {
   return (
@@ -17,7 +17,7 @@ export default function DiscussionCategories() {
       </Link>
 
       <CipherTable
-        fetchUrlPath={`categories/?entityName=${Category.DISCUSSION}`}
+        fetchUrlPath={`categories/?entityName=${CategoryType.DISCUSSION}`}
         deleteUrlPath="categories"
       />
     </>

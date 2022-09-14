@@ -8,6 +8,7 @@ import {
 import DeleteButton from "../delete-button";
 import { Button } from "react-bootstrap";
 import Link from "next/link";
+import { formatDateTime } from "../../lib/format-date";
 
 export default function CipherTable({ fetchUrlPath, deleteUrlPath }) {
   const [items, setItems] = useState([]);
@@ -42,6 +43,11 @@ export default function CipherTable({ fetchUrlPath, deleteUrlPath }) {
       name: "Name",
       selector: (row) => row.name,
       sortable: true,
+    },
+    {
+      name: "Created at",
+      selector: (row) => row.createdAt,
+      cell: (row) => formatDateTime(row.createdAt),
     },
     {
       name: "Actions",

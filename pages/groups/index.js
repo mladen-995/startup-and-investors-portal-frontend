@@ -79,7 +79,7 @@ export default function Groups() {
   };
 
   function renderArchiveButton(row) {
-    if (!row.isArchived) {
+    if (!row.isArchived && user && user.user.id == row.createdBy) {
       return (
         <Button
           variant="warning"

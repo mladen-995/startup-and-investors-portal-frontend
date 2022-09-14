@@ -1,4 +1,4 @@
-export const Category = {
+export const CategoryType = {
   NEWS: "news",
   DISCUSSION: "discussions",
 };
