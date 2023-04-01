@@ -4,7 +4,7 @@ import AuthLayout from "../components/layout-auth";
 import { Badge, Button } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../lib/axios";
-import { useUser } from "../context/user-hook";
+import { useUser } from "../hooks/user-hook";
 import {
   NotificationContainer,
   NotificationManager,
@@ -75,6 +75,9 @@ export default function UserCreationRequests() {
       minWidth: "300px",
       cell: (row) => (
         <div>
+          <Button variant="info" size="sm" className="me-2">
+            Show
+          </Button>
           <Button
             variant="success"
             size="sm"

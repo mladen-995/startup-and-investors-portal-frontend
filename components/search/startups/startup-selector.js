@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, ListGroup } from "react-bootstrap";
-import { useUser } from "../../../context/user-hook";
+import { useUser } from "../../../hooks/user-hook";
 import { axiosInstance } from "../../../lib/axios";
 import AskForPermission from "./ask-for-permission";
 import StartupSearchModal from "./startups-modal";

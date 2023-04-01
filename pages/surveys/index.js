@@ -1,4 +1,3 @@
-import { getUser } from "../../services/user.service";
 import { useEffect, useState } from "react";
 import Router from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
@@ -18,9 +17,8 @@ import { axiosInstance } from "../../lib/axios";
 import { Field, FieldArray, Form, Formik } from "formik";
 import CompletedSurveys from "../../components/surveys/completed";
 import NotCompletedSurveys from "../../components/surveys/not-completed";
-import { isInvestor } from "../../lib/user.service";
 import { Role } from "../../enums/role";
-import { useUser } from "../../context/user-hook";
+import { useUser } from "../../hooks/user-hook";
 
 export default function Surveys() {
   const user = useUser();

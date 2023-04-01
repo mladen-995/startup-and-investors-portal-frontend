@@ -120,7 +120,7 @@ export default function InvestorForm() {
           tin: "",
           legalEntityName: "",
           website: "",
-          establishmentDate: new Date(),
+          establishmentDate: null,
           registrationNumber: "",
           streetId: "",
           streetNumberId: "",
@@ -242,10 +242,14 @@ export default function InvestorForm() {
                 <Field name="establishmentDate">
                   {({ field, meta, form: { setFieldValue } }) => (
                     <FormGroup className="mb-3">
-                      <FormLabel>Establishment date</FormLabel>
+                      <FormLabel>
+                        Establishment date{" "}
+                        <span className="text-danger">*</span>
+                      </FormLabel>
                       <DatePicker
                         className="form-control"
                         value={field.value}
+                        isClearable
                         onChange={(val) => {
                           setFieldValue(field.name, val);
                         }}
@@ -590,8 +594,8 @@ export default function InvestorForm() {
             >
               Register
             </Button>
-            You don't have an account? <Link href="/login">Click here</Link> to
-            login.
+            You already have an account? <Link href="/login">Click here</Link>{" "}
+            to login.
           </Form>
         )}
       </Formik>

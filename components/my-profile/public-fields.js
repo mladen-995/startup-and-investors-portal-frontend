@@ -1,7 +1,7 @@
 import { Field, Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import { Button, Col, FormCheck, Row } from "react-bootstrap";
-import { useUser } from "../../context/user-hook";
+import { useUser } from "../../hooks/user-hook";
 import { axiosInstance } from "../../lib/axios";
 import {
   NotificationContainer,

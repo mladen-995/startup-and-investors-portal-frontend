@@ -1,5 +1,6 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import axios from "axios";
+import { sessionOptions } from "../../lib/session";
 
 async function loginRoute(req, res) {
   const { username, password } = req.body;
@@ -20,7 +21,4 @@ async function loginRoute(req, res) {
   }
 }
 
-export default withIronSessionApiRoute(loginRoute, {
-  password: "test1234ohdsjankdjsajdbjksabdkabhjdbashjsbadjbdhjsbjdbjbhjs",
-  cookieName: "iron-test",
-});
+export default withIronSessionApiRoute(loginRoute, sessionOptions);

@@ -4,7 +4,7 @@ import { Button, FormGroup, FormLabel, Modal } from "react-bootstrap";
 import { axiosInstance } from "../../lib/axios";
 import Select from "react-select";
 import * as Yup from "yup";
-import { useUser } from "../../context/user-hook";
+import { useUser } from "../../hooks/user-hook";
 
 export default function MuteInvestor({ onMute }) {
   const user = useUser();

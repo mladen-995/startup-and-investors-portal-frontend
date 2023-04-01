@@ -1,4 +1,3 @@
-import { getUser } from "../../services/user.service";
 import { useEffect, useState } from "react";
 import Router from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
@@ -19,7 +18,7 @@ import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
 import { Field, FieldArray, Form, Formik } from "formik";
 import axios from "axios";
-import { useUser } from "../../context/user-hook";
+import { useUser } from "../../hooks/user-hook";
 import { formatDateTime } from "../../lib/format-date";
 
 export default function CompletedSurveys() {

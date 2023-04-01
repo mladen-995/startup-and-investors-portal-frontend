@@ -1,4 +1,3 @@
-import { getUser } from "../../services/user.service";
 import { useEffect, useState } from "react";
 import Router from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
@@ -8,7 +7,7 @@ import { sessionOptions } from "../../lib/session";
 import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
-import { useUser } from "../../context/user-hook";
+import { useUser } from "../../hooks/user-hook";
 import DeleteButton from "../../components/delete-button";
 import {
   NotificationContainer,
@@ -166,5 +165,5 @@ export default function Groups() {
 }
 
 Groups.getLayout = function getLayout(page) {
-  return <AuthLayout>{page}</AuthLayout>;
+  return <AuthLayout isProtected={true}>{page}</AuthLayout>;
 };

@@ -4,7 +4,7 @@ import AuthLayout from "../../components/layout-auth";
 import { Badge, Button } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
-import { useUser } from "../../context/user-hook";
+import { useUser } from "../../hooks/user-hook";
 import {
   NotificationContainer,
   NotificationManager,

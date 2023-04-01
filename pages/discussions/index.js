@@ -5,7 +5,7 @@ import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
 import DiscussionModal from "../../components/discussions/discussion-modal";
-import { useUser } from "../../context/user-hook";
+import { useUser } from "../../hooks/user-hook";
 import {
   NotificationContainer,
   NotificationManager,

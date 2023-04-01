@@ -3,7 +3,7 @@ import { sessionOptions } from "../../lib/session";
 
 function logoutRoute(req, res) {
   req.session.destroy();
-  res.json({ isLoggedIn: false, login: "", avatarUrl: "" });
+  res.json({ isLoggedIn: false });
 }
 
 export default withIronSessionApiRoute(logoutRoute, sessionOptions);

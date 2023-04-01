@@ -41,15 +41,9 @@ export default function AuthLayout({
   function logout(e) {
     e.preventDefault();
 
-    axios
-      .post("http://localhost:3000/api/logout")
-      .then(() => {
-        Cookies.remove("token");
-        Router.push("/login");
-      })
-      .catch((error) => {
-        alert("error");
-      });
+    axios.post("http://localhost:3000/api/logout").then(() => {
+      Router.push("/login");
+    });
   }
 
   if (showPage) {

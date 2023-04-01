@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../lib/axios";
-import { useUser } from "../context/user-hook";
+import { useUser } from "../hooks/user-hook";
 import {
   NotificationContainer,
   NotificationManager,
@@ -151,14 +151,23 @@ export default function Statistics() {
       <hr />
       <Row>
         {statsParts.map((statsPart, index) => (
-          <Col key={index} className="mb-3">
-            <Card style={{ width: "18rem" }} className="text-center">
-              <Card.Header>{statsPart.label}</Card.Header>
-              <Card.Body>
-                <h2>{stats && stats[statsPart.field]}</h2>
-              </Card.Body>
-            </Card>
-          </Col>
+          <>
+            <Col key={index} className="mb-3" xs={4}>
+              <Card
+                style={{
+                  width: "18rem",
+                  "margin-left": "auto",
+                  "margin-right": "auto",
+                }}
+                className="text-center"
+              >
+                <Card.Header>{statsPart.label}</Card.Header>
+                <Card.Body>
+                  <h2>{stats && stats[statsPart.field]}</h2>
+                </Card.Body>
+              </Card>
+            </Col>
+          </>
         ))}
       </Row>
 

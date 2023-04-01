@@ -1,7 +1,7 @@
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Button, Col, FormGroup, FormLabel, Row } from "react-bootstrap";
-import { useUser } from "../../context/user-hook";
+import { useUser } from "../../hooks/user-hook";
 import { axiosInstance } from "../../lib/axios";
 import CitySelect from "../inputs/cities-select";
 import CountrySelect from "../inputs/countries-select";

@@ -4,7 +4,6 @@ import AuthLayout from "../../components/layout-auth";
 import { Badge, Button, Dropdown } from "react-bootstrap";
 import Link from "next/link";
 import { axiosInstance } from "../../lib/axios";
-import { useUser } from "../../context/user-hook";
 import {
   NotificationContainer,
   NotificationManager,
@@ -15,6 +14,7 @@ import ArchiveButton from "../../components/archive-button";
 import RequestDeleteButton from "../../components/request-delete-button.js";
 import AdDetailsModal from "../../components/ads/details-modal";
 import { formatDateTime } from "../../lib/format-date";
+import { useUser } from "../../hooks/user-hook";
 
 export default function Ads() {
   const user = useUser();

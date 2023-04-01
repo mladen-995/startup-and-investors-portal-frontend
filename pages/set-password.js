@@ -9,7 +9,7 @@ import Router, { useRouter } from "next/router";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomInput from "../components/inputs/custom-input";
-import { useUser } from "../context/user-hook";
+import { useUser } from "../hooks/user-hook";
 import { axiosInstance } from "../lib/axios";
 import {
   NotificationContainer,

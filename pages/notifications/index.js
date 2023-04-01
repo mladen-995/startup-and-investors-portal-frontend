@@ -1,4 +1,3 @@
-import { getUser } from "../../services/user.service";
 import { useEffect, useState } from "react";
 import Router from "next/router";
 import { withIronSessionSsr } from "iron-session/next";

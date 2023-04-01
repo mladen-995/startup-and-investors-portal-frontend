@@ -1,5 +1,4 @@
 import AuthLayout from "./../components/layout-auth";
-import { getUser } from "./../services/user.service";
 import { useEffect, useState } from "react";
 import Router from "next/router";
 import { withIronSessionSsr } from "iron-session/next";
@@ -12,7 +11,7 @@ import StreetSelect from "../components/inputs/streets-select";
 import MunicipalitySelect from "../components/inputs/municipalities-select";
 import CitySelect from "../components/inputs/cities-select";
 import CountrySelect from "../components/inputs/countries-select";
-import { useUser } from "../context/user-hook";
+import { useUser } from "../hooks/user-hook";
 import ChangePassword from "../components/my-profile/change-password";
 import PublicFields from "../components/my-profile/public-fields";
 import MutedInvestors from "../components/my-profile/muted-investors";
